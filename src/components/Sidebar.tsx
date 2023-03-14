@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 export const Sidebar = () => {
   const { data: sessionData } = useSession();
@@ -23,7 +24,7 @@ export const Sidebar = () => {
         <div className='flex justify-center items-center mt-4 mb-3'>
             <div className='avatar'>
                 <div className='w-24 rounded-full'>
-                    <img src={`assets/user.png`} />
+                    <Image src={`assets/user.png`} alt={'User Image'}/>
                 </div>
             </div>
         </div>

@@ -53,6 +53,8 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    role          String? @default("USER")
+    team          String? @default("NONE")
     accounts      Account[]
     sessions      Session[]
 }
