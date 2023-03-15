@@ -1,57 +1,90 @@
-import { useSession } from 'next-auth/react';
-import Image from 'next/image';
+import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack, rem, Avatar, Divider } from '@mantine/core';
+import { IconUser, IconCalendarEvent, IconLogout } from '@tabler/icons-react';
+
+const useStyles = createStyles((theme) => ({
+link: {
+    width: rem(50),
+    height: rem(50),
+    borderRadius: theme.radius.md,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+
+    '&:hover': {
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
+    },
+},
+
+active: {
+    '&, &:hover': {
+        backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
+        color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
+        },
+    },
+}));
+
+interface NavbarLinkProps {
+    icon: React.FC<any>;
+    label: string;
+    active?: boolean;
+    onClick?(): void;
+}
+
+function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+    const { classes, cx } = useStyles();
+    return (
+        <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
+        <UnstyledButton onClick={onClick} className={cx(classes.link, { [classes.active]: active })}>
+            <Icon size="1.2rem" stroke={1.5} />
+        </UnstyledButton>
+        </Tooltip>
+    );
+}
+
+const mockdata = [
+    { icon: IconUser, label: 'Profile' },
+    { icon: IconCalendarEvent, label: 'Event Calendar' },
+]
+
 
 export const Sidebar = () => {
-  const { data: sessionData } = useSession();
-  
-  return (
-    //sidebar
-    <div className='w-64 h-screen bg-neutral'>
-        {/* Nav */}
-        <div className='navbar'>
-            {/* Title */}
-            <div className='flex-1 justify-center'>
-                <a className='mt-3 normal-case text-4xl'>AVENTUS</a>  
-            </div>
-            {/* Hamburger Icon */}
-            {/* <div className="flex-none mt-3 mr-3">
-                <button className="btn btn-square btn-ghost">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
-            </div> */}
-        </div>
-        {/* Avatar */}
-        <div className='flex justify-center items-center mt-4 mb-3'>
-            <div className='avatar'>
-                <div className='w-24 rounded-full'>
-                    <Image src={`assets/user.png`} alt={'User Image'}/>
-                </div>
-            </div>
-        </div>
-        {/* Username */}
-        <div className='text-center text-3xl font-bold'>
-            {sessionData?.user?.name? `${sessionData.user.name}` : 'User'}
-        </div>
-        {/* Menu */}
-        <div className='ml-6 mt-3'>
-            <ul className='menu p-2'>
-            <li className="hover-bordered">
-                <a className='text-sm'>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                    Dashboard
-                </a>
-            </li>
-            <li className="menu-title">
-                <span>Data</span>
-            </li>
-            <li className="hover-bordered">
-                <a className='text-sm'>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                    Team
-                </a>
-            </li>
-            </ul>
-        </div>
-    </div>
-  );
+    const [active, setActive] = useState(2);
+    const { data: session } = useSession();
+
+    const links = mockdata.map((link, index) => (
+        <NavbarLink
+          {...link}
+          key={link.label}
+          active={index === active}
+          onClick={() => setActive(index)}
+        />
+      ));
+    
+      return (
+        <Navbar height="100vh" width={{ base: 100 }} p="xl">
+          <Center>
+            AVENTUS
+          </Center>
+          <Center mt={20}> 
+            <Avatar size="lg" radius="md" src={session?.user?.image} alt="user avatar"/>
+          </Center>
+          <Center mt={15}>
+            {session?.user?.name}
+          </Center>
+          <Divider my="lg" size="md" />
+          <Navbar.Section grow mt={10}>
+            <Stack justify="center" spacing={10}>
+              {links}
+            </Stack>
+          </Navbar.Section>
+          <Navbar.Section>
+            <Stack justify="center" spacing={10}>
+              <NavbarLink icon={IconLogout} label="Logout" onClick={ () => void signOut() } />
+            </Stack>
+          </Navbar.Section>
+        </Navbar>
+      );
 };
