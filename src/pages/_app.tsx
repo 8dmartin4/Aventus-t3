@@ -1,7 +1,7 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider } from "@mantine/core";
 
 import { api } from "~/utils/api";
 
@@ -17,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       withNormalizeCSS
       theme={{
         /** Put your mantine theme override here */
-        colorScheme: 'dark',
+        colorScheme: "dark",
       }}
     >
       <SessionProvider session={session}>

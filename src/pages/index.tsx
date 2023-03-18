@@ -7,16 +7,16 @@ import {
   Center,
   Text,
   Button,
-  Group,
   Stack,
   LoadingOverlay,
   AppShell,
   Title,
   Divider,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
-import { useState } from "react";
 import Head from "next/head";
+import { Prism } from "@mantine/prism";
+import EventInfo from "~/components/EventInfo";
+import { DataTable } from "mantine-datatable";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -59,41 +59,62 @@ const Home: NextPage = () => {
         {sessionData ? (
           <AppShell className="flex">
             <Sidebar />
-            <Stack p="md">
-              <Title order={1}>Current Event</Title>
-              {currentEvent && (
-                <div>
-                  <h1>{currentEvent.title}</h1>
-                  <h2>{currentEvent.group?.name}</h2>
-                  <h2>Event ID: {currentEvent.id}</h2>
-                </div>
-              )}
-              <Divider />
-              <Title order={1}>Last Event</Title>
-              {lastEvent && (
-                <div>
-                  <h1>{lastEvent.title}</h1>
-                  <h2>{lastEvent.group?.name}</h2>
-                  <h2>Event ID: {lastEvent.id}</h2>
-                </div>
-              )}
-              {/* {currentEvent && JSON.stringify(currentEvent, null, `\t`)}
-              {lastEvent && JSON.stringify(lastEvent, null, `\t`)} */}
-              {/* {groupCompetitionFetchStatus === "loading" ? (
-                  <LoadingOverlay visible />
+            {groupCompetitionFetchStatus === "loading" ? (
+              <LoadingOverlay visible />
+            ) : (
+              <Stack p="md">
+                {groupCompetition && groupCompetition.length > 0 ? (
+                  <DataTable
+                    columns={[
+                      {
+                        accessor: "title",
+                      },
+                      {
+                        accessor: "metric",
+                      },
+                      {
+                        accessor: "startsAt",
+                        render: (value) =>
+                          new Date(value?.startsAt).toLocaleString(),
+                      },
+                      {
+                        accessor: "endsAt",
+                        render: (value) =>
+                          new Date(value?.endsAt).toLocaleString(),
+                      },
+                    ]}
+                    records={groupCompetition}
+                  />
                 ) : (
-                  groupCompetition &&
+                  <></>
+                )}
+                <Title order={1}>Current Event</Title>
+                {currentEvent ? (
+                  <EventInfo event={currentEvent} order={2} />
+                ) : (
+                  "No event found."
+                )}
+                <Divider />
+                <Title order={2}>Last Event</Title>
+                {lastEvent ? (
+                  <EventInfo event={lastEvent} order={3} />
+                ) : (
+                  "No event found."
+                )}
+                <Prism language="json" withLineNumbers>
+                  {(currentEvent
+                    ? JSON.stringify({ current: currentEvent }, null, `\t`)
+                    : "") +
+                    (lastEvent
+                      ? JSON.stringify({ last: lastEvent }, null, `\t`)
+                      : "")}
+                </Prism>
+                {groupCompetition &&
                   groupCompetition.map((comp) => (
-                    <div key={comp.id}>
-                      <h1>{comp.title}</h1>
-                      <h2>{comp.group?.name}</h2>
-                      <h2>Event ID: {comp.id}</h2>
-                      <h2>Starts At: {comp.startsAt.toLocaleString()}</h2>
-                      <h2>Ends At: {comp.endsAt.toLocaleString()}</h2>
-                    </div>
-                  ))
-                )} */}
-            </Stack>
+                    <EventInfo order={4} event={comp} key={comp.id} />
+                  ))}
+              </Stack>
+            )}
           </AppShell>
         ) : (
           <div>
