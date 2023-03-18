@@ -63,31 +63,6 @@ const Home: NextPage = () => {
               <LoadingOverlay visible />
             ) : (
               <Stack p="md">
-                {groupCompetition && groupCompetition.length > 0 ? (
-                  <DataTable
-                    columns={[
-                      {
-                        accessor: "title",
-                      },
-                      {
-                        accessor: "metric",
-                      },
-                      {
-                        accessor: "startsAt",
-                        render: (value) =>
-                          new Date(value?.startsAt).toLocaleString(),
-                      },
-                      {
-                        accessor: "endsAt",
-                        render: (value) =>
-                          new Date(value?.endsAt).toLocaleString(),
-                      },
-                    ]}
-                    records={groupCompetition}
-                  />
-                ) : (
-                  <></>
-                )}
                 <Title order={1}>Current Event</Title>
                 {currentEvent ? (
                   <EventInfo event={currentEvent} order={2} />
@@ -109,6 +84,33 @@ const Home: NextPage = () => {
                       ? JSON.stringify({ last: lastEvent }, null, `\t`)
                       : "")}
                 </Prism>
+                {groupCompetition && groupCompetition.length > 0 ? (
+                  <DataTable
+                    columns={[
+                      {
+                        accessor: "title",
+                      },
+                      {
+                        accessor: "metric",
+                      },
+                      {
+                        accessor: "startsAt",
+                        title: "Starts",
+                        render: (value) =>
+                          new Date(value?.startsAt).toLocaleString(),
+                      },
+                      {
+                        accessor: "endsAt",
+                        title: "Ends",
+                        render: (value) =>
+                          new Date(value?.endsAt).toLocaleString(),
+                      },
+                    ]}
+                    records={groupCompetition}
+                  />
+                ) : (
+                  <></>
+                )}
                 {groupCompetition &&
                   groupCompetition.map((comp) => (
                     <EventInfo order={4} event={comp} key={comp.id} />
