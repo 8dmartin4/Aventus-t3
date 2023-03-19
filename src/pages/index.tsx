@@ -23,6 +23,7 @@ const Home: NextPage = () => {
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
     api.wom.findGroupCompetitions.useQuery({ id: 267 });
 
+  // find the most recent friday
   const today = new Date();
   const lastFriday =
     new Date().getDay() >= 5
@@ -37,6 +38,7 @@ const Home: NextPage = () => {
           )
         );
 
+  // find the current and previous event
   const currentEvent = groupCompetition?.find(
     (comp) =>
       comp.startsAt.getTime() <= today.getTime() &&
@@ -47,6 +49,12 @@ const Home: NextPage = () => {
       comp.startsAt.getTime() <= lastFriday.getTime() &&
       comp.endsAt.getTime() >= lastFriday.getTime()
   );
+
+  // find the details of the current and previous events
+  const { data: currentCompetitionDetails, status: currentCompetitionDetailsFetchStatus } =
+    api.wom.findCompetitionDetails.useQuery({ id: ( currentEvent?.id! ) });
+  const { data: lastCompetitionDetails, status: lastCompetitionDetailsFetchStatus } =
+    api.wom.findCompetitionDetails.useQuery({ id: ( lastEvent?.id! ) });
 
   return (
     <>
@@ -76,37 +84,33 @@ const Home: NextPage = () => {
                 ) : (
                   "No event found."
                 )}
-                <Prism language="json" withLineNumbers>
-                  {(currentEvent
-                    ? JSON.stringify({ current: currentEvent }, null, `\t`)
+                {/* <Prism language="json" withLineNumbers>
+                  {(currentCompetitionDetails
+                    ? JSON.stringify({ current: currentCompetitionDetails }, null, `\t`)
                     : "") +
                     (lastEvent
                       ? JSON.stringify({ last: lastEvent }, null, `\t`)
                       : "")}
-                </Prism>
-                {groupCompetition && groupCompetition.length > 0 ? (
-                  <DataTable
+                </Prism> */}
+                {currentCompetitionDetails ? (
+                  <DataTable 
                     columns={[
                       {
-                        accessor: "title",
+                        accessor: "players",
+                        title: "RSN",   
+                        render: (value) => { 
+                          return (value.progress.gained > 0) ? value.player.displayName : ""
+                        }                
                       },
                       {
-                        accessor: "metric",
-                      },
-                      {
-                        accessor: "startsAt",
-                        title: "Starts",
-                        render: (value) =>
-                          new Date(value?.startsAt).toLocaleString(),
-                      },
-                      {
-                        accessor: "endsAt",
-                        title: "Ends",
-                        render: (value) =>
-                          new Date(value?.endsAt).toLocaleString(),
+                        accessor: "gained",
+                        title: "XP/KC Gained",   
+                        render: (value) => { 
+                          return (value.progress.gained > 0) ? value.progress.gained : ""
+                        }
                       },
                     ]}
-                    records={groupCompetition}
+                    records={currentCompetitionDetails.participations}
                   />
                 ) : (
                   <></>
