@@ -1,22 +1,20 @@
 import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
-
 import { api } from "~/utils/api";
 import { Sidebar } from "~/components/Sidebar";
 import {
   Center,
   Text,
   Button,
-  Stack,
   LoadingOverlay,
   AppShell,
+  SimpleGrid,
   Title,
-  Divider,
+  Stack,
 } from "@mantine/core";
 import Head from "next/head";
 import { Prism } from "@mantine/prism";
-import EventInfo from "~/components/EventInfo";
-import { DataTable } from "mantine-datatable";
+import InfoTable from "~/components/InfoTable";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -70,20 +68,7 @@ const Home: NextPage = () => {
             {groupCompetitionFetchStatus === "loading" ? (
               <LoadingOverlay visible />
             ) : (
-              <Stack p="md">
-                <Title order={1}>Current Event</Title>
-                {currentEvent ? (
-                  <EventInfo event={currentEvent} order={2} />
-                ) : (
-                  "No event found."
-                )}
-                <Divider />
-                <Title order={2}>Last Event</Title>
-                {lastEvent ? (
-                  <EventInfo event={lastEvent} order={3} />
-                ) : (
-                  "No event found."
-                )}
+              <SimpleGrid cols={3} spacing="sm" verticalSpacing="sm">
                 {/* <Prism language="json" withLineNumbers>
                   {(currentCompetitionDetails
                     ? JSON.stringify({ current: currentCompetitionDetails }, null, `\t`)
@@ -92,37 +77,35 @@ const Home: NextPage = () => {
                       ? JSON.stringify({ last: lastEvent }, null, `\t`)
                       : "")}
                 </Prism> */}
-                {currentCompetitionDetails ? (
-                  <DataTable 
-                    columns={[
-                      {
-                        accessor: "players",
-                        title: "RSN",   
-                        render: (value) => { 
-                          return (value.progress.gained > 0) ? value.player.displayName : ""
-                        }                
-                      },
-                      {
-                        accessor: "gained",
-                        title: "XP/KC Gained",   
-                        render: (value) => { 
-                          return (value.progress.gained > 0) ? value.progress.gained : ""
-                        }
-                      },
-                    ]}
-                    records={currentCompetitionDetails.participations}
-                  />
+                {/* current event table */}
+                {currentCompetitionDetailsFetchStatus === "loading" ? (
+                  <LoadingOverlay visible />
                 ) : (
-                  <></>
+                  <Stack>
+                    <Title order={2}>Current Event:</Title>
+                    <Title order={4}>{currentCompetitionDetails?.title}</Title>
+                    <Title order={6}>Competition Start: {currentCompetitionDetails?.startsAt.toLocaleDateString()}</Title>
+                    <Title order={6}>Competition End: {currentCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
+                    <InfoTable {...currentCompetitionDetails!} />
+                  </Stack>
                 )}
-                {groupCompetition &&
-                  groupCompetition.map((comp) => (
-                    <EventInfo order={4} event={comp} key={comp.id} />
-                  ))}
-              </Stack>
+                {/* last event table */}
+                {lastCompetitionDetailsFetchStatus === "loading" ? (
+                  <LoadingOverlay visible />
+                ) : (
+                  <Stack>
+                    <Title order={2}>Last Event:</Title>
+                    <Title order={4}>{lastCompetitionDetails?.title}</Title>
+                    <Title order={6}>Competition Start: {lastCompetitionDetails?.startsAt.toLocaleDateString()}</Title>
+                    <Title order={6}>Competition End: {lastCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
+                    <InfoTable {...lastCompetitionDetails!} />
+                  </Stack>
+                )}
+              </SimpleGrid>
             )}
           </AppShell>
         ) : (
+          // if not signed in display sign in page
           <div>
             <Center>
               <Text
