@@ -84,8 +84,7 @@ const Home: NextPage = () => {
                   <Stack>
                     <Title order={2}>Current Event:</Title>
                     <Title order={4}>{currentCompetitionDetails?.title}</Title>
-                    <Title order={6}>Competition Start: {currentCompetitionDetails?.startsAt.toLocaleDateString()}</Title>
-                    <Title order={6}>Competition End: {currentCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
+                    <Title order={6}>Duration: {currentCompetitionDetails?.startsAt.toLocaleDateString()} to {currentCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
                     <InfoTable {...currentCompetitionDetails!} />
                   </Stack>
                 )}
@@ -96,8 +95,7 @@ const Home: NextPage = () => {
                   <Stack>
                     <Title order={2}>Last Event:</Title>
                     <Title order={4}>{lastCompetitionDetails?.title}</Title>
-                    <Title order={6}>Competition Start: {lastCompetitionDetails?.startsAt.toLocaleDateString()}</Title>
-                    <Title order={6}>Competition End: {lastCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
+                    <Title order={6}>Duration: {lastCompetitionDetails?.startsAt.toLocaleDateString()} to {lastCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
                     <InfoTable {...lastCompetitionDetails!} />
                   </Stack>
                 )}
