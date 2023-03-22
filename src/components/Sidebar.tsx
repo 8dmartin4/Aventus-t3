@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react';
 import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack, rem, Avatar, Divider } from '@mantine/core';
-import { IconUser, IconCalendarEvent, IconLogout } from '@tabler/icons-react';
+import { IconUser, IconCalendarEvent, IconLogout, IconHome } from '@tabler/icons-react';
+import Link from 'next/link';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -30,28 +30,29 @@ const useStyles = createStyles((theme) => ({
 interface NavbarLinkProps {
   icon: React.FC<any>;
   label: string;
+  tooltip: string;
   active?: boolean;
   onClick?(): void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, tooltip, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
-  const router = useRouter();
 
   return (
-    <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-    <UnstyledButton 
-      onClick={onClick} 
-      className={cx(classes.link, { [classes.active]: active })}>
-      <Icon size="1.2rem" stroke={1.5} />
-    </UnstyledButton>
+    <Tooltip label={tooltip} position="right" transitionProps={{ duration: 0 }}>
+      <UnstyledButton 
+        onClick={onClick} 
+        className={cx(classes.link, { [classes.active]: active })}>
+        <Icon size="1.2rem" stroke={1.5} />
+      </UnstyledButton>
     </Tooltip>
   );
 }
 
 const mockdata = [
-  { icon: IconUser, label: 'Profile' },
-  { icon: IconCalendarEvent, label: 'Event Calendar' },
+  { icon: IconHome, label: 'home', tooltip: 'Home' },
+  { icon: IconUser, label: 'profile', tooltip: 'Profile' },
+  { icon: IconCalendarEvent, label: 'eventcalendar', tooltip: 'Event Calendar' },
 ]
 
 export const Sidebar = () => {
@@ -86,7 +87,7 @@ export const Sidebar = () => {
       </Navbar.Section>
       <Navbar.Section>
         <Stack justify="center" spacing={10}>
-          <NavbarLink icon={ IconLogout } label="Logout" onClick={() => void signOut()} />
+          <NavbarLink icon={ IconLogout } label="Logout" tooltip="Log Out" onClick={() => void signOut()} />
         </Stack>
       </Navbar.Section>
     </Navbar>

@@ -21,10 +21,10 @@ const Home: NextPage = () => {
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
     api.wom.findGroupCompetitions.useQuery({ id: 267 });
 
-  // find the most recent friday
   const today = new Date();
+  // find the most recent friday
   const lastFriday =
-    new Date().getDay() >= 5
+    new Date().getDay() >= 1
       ? new Date(
           new Date().setDate(
             new Date().getDate() - ((new Date().getDay() + 2) % 7) - 7
@@ -50,9 +50,9 @@ const Home: NextPage = () => {
 
   // find the details of the current and previous events
   const { data: currentCompetitionDetails, status: currentCompetitionDetailsFetchStatus } =
-    api.wom.findCompetitionDetails.useQuery({ id: ( currentEvent?.id! ) });
+    api.wom.findCompetitionDetails.useQuery({ id: (currentEvent?.id ? currentEvent?.id : 0) });
   const { data: lastCompetitionDetails, status: lastCompetitionDetailsFetchStatus } =
-    api.wom.findCompetitionDetails.useQuery({ id: ( lastEvent?.id! ) });
+    api.wom.findCompetitionDetails.useQuery({ id: ( lastEvent?.id ? lastEvent?.id : 0 ) });
 
   return (
     <>
@@ -69,14 +69,6 @@ const Home: NextPage = () => {
               <LoadingOverlay visible />
             ) : (
               <SimpleGrid cols={3} spacing="sm" verticalSpacing="sm">
-                {/* <Prism language="json" withLineNumbers>
-                  {(currentCompetitionDetails
-                    ? JSON.stringify({ current: currentCompetitionDetails }, null, `\t`)
-                    : "") +
-                    (lastEvent
-                      ? JSON.stringify({ last: lastEvent }, null, `\t`)
-                      : "")}
-                </Prism> */}
                 {/* current event table */}
                 {currentCompetitionDetailsFetchStatus === "loading" ? (
                   <LoadingOverlay visible />
@@ -99,6 +91,14 @@ const Home: NextPage = () => {
                     <InfoTable {...lastCompetitionDetails!} />
                   </Stack>
                 )}
+                {/* <Prism language="json" withLineNumbers>
+                  {(currentCompetitionDetails
+                    ? JSON.stringify({ current: currentCompetitionDetails }, null, `\t`)
+                    : "") +
+                    (lastEvent
+                      ? JSON.stringify({ last: lastEvent }, null, `\t`)
+                      : "")}
+                </Prism> */}
               </SimpleGrid>
             )}
           </AppShell>
