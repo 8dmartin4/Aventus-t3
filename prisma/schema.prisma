@@ -15,14 +15,14 @@ datasource db {
 }
 
 model Example {
-    id        String   @id @map("_id")
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @map("_id")
+    id                String @id @default(auto()) @map("_id") @db.ObjectId
     userId            String
     type              String
     provider          String
@@ -40,7 +40,7 @@ model Account {
 }
 
 model Session {
-    id           String   @id @map("_id")
+    id           String @id @default(auto()) @map("_id") @db.ObjectId
     sessionToken String   @unique
     userId       String
     expires      DateTime
@@ -48,7 +48,7 @@ model Session {
 }
 
 model User {
-    id            String    @id @map("_id")
+    id            String @id @default(auto()) @map("_id") @db.ObjectId
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -60,7 +60,7 @@ model User {
 }
 
 model VerificationToken {
-    identifier String @id @map("_id")
+    identifier String   @id @default(auto()) @map("_id") @db.ObjectId
     token      String   @unique
     expires    DateTime
 
