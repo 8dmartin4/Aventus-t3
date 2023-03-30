@@ -1,4 +1,3 @@
-import { Metric } from "@wise-old-man/utils";
 import { z } from "zod";
 
 import {

@@ -67,6 +67,7 @@ export const Sidebar = () => {
       key={link.label}
       active={index === active}
       onClick={() => {
+        void
         router.push(link.label)
         setActive(index)
       }}
