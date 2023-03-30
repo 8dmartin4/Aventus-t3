@@ -13,7 +13,6 @@ import {
   Stack,
 } from "@mantine/core";
 import Head from "next/head";
-import { Prism } from "@mantine/prism";
 import InfoTable from "~/components/InfoTable";
 
 const Home: NextPage = () => {
@@ -68,7 +67,7 @@ const Home: NextPage = () => {
             {groupCompetitionFetchStatus === "loading" ? (
               <LoadingOverlay visible />
             ) : (
-              <SimpleGrid cols={3} spacing="sm" verticalSpacing="sm">
+              <SimpleGrid cols={2} spacing="sm" verticalSpacing="sm">
                 {/* current event table */}
                 {currentCompetitionDetailsFetchStatus === "loading" ? (
                   <LoadingOverlay visible />
@@ -91,14 +90,6 @@ const Home: NextPage = () => {
                     <InfoTable {...lastCompetitionDetails!} />
                   </Stack>
                 )}
-                {/* <Prism language="json" withLineNumbers>
-                  {(currentCompetitionDetails
-                    ? JSON.stringify({ current: currentCompetitionDetails }, null, `\t`)
-                    : "") +
-                    (lastEvent
-                      ? JSON.stringify({ last: lastEvent }, null, `\t`)
-                      : "")}
-                </Prism> */}
               </SimpleGrid>
             )}
           </AppShell>

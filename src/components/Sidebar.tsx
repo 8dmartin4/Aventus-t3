@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack, rem, Avatar, Divider } from '@mantine/core';
 import { IconUser, IconCalendarEvent, IconLogout, IconHome } from '@tabler/icons-react';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -50,21 +50,26 @@ function NavbarLink({ icon: Icon, tooltip, active, onClick }: NavbarLinkProps) {
 }
 
 const mockdata = [
-  { icon: IconHome, label: 'home', tooltip: 'Home' },
+  { icon: IconHome, label: '/', tooltip: 'Home' },
   { icon: IconUser, label: 'profile', tooltip: 'Profile' },
   { icon: IconCalendarEvent, label: 'eventcalendar', tooltip: 'Event Calendar' },
 ]
 
+
 export const Sidebar = () => {
   const [active, setActive] = useState(2);
   const { data: session } = useSession();
+  const router = useRouter();
 
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {
+        router.push(link.label)
+        setActive(index)
+      }}
     />
   ));
   
