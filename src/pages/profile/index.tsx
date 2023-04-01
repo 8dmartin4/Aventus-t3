@@ -1,12 +1,15 @@
+import { AppShell } from '@mantine/core'
 import React from 'react'
 import { Sidebar } from '~/components/Sidebar'
 
 const index = () => {
   return (
-    <div>
-        <Sidebar />
-        index
-    </div>
+    <main>
+        <AppShell className='flex'>
+          <Sidebar />
+          
+        </AppShell>
+    </main>
   )
 }
 

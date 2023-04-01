@@ -52,7 +52,7 @@ function NavbarLink({ icon: Icon, tooltip, active, onClick }: NavbarLinkProps) {
 const mockdata = [
   { icon: IconHome, label: '/', tooltip: 'Home' },
   { icon: IconUser, label: 'profile', tooltip: 'Profile' },
-  { icon: IconCalendarEvent, label: 'eventcalendar', tooltip: 'Event Calendar' },
+  { icon: IconCalendarEvent, label: 'events', tooltip: 'Edit Events' },
 ]
 
 
