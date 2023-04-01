@@ -33,7 +33,7 @@ const index = () => {
                     color: 'red',
                     title: `Delete Event: "${record.title}"`,
                     //put wom delete action in the onclick function
-                    onClick: () => {}
+                    onClick: () => {undefined}
                   },
                 ],
               }}
