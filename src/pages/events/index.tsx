@@ -1,5 +1,6 @@
 import { AppShell, LoadingOverlay } from '@mantine/core'
-import { DataTable } from 'mantine-datatable';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid'
 import React from 'react'
 import { Sidebar } from '~/components/Sidebar'
 import { api } from '~/utils/api';
@@ -7,6 +8,12 @@ import { api } from '~/utils/api';
 const index = () => {
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
   api.wom.findGroupCompetitions.useQuery({ id: 267 });
+
+  const calendarEvents = groupCompetition?.map((value) => {return {
+    title: value.title, 
+    start: value.startsAt.toISOString(), 
+    end: value.endsAt.toISOString()
+  }})
 
   return (
     <>
@@ -16,27 +23,10 @@ const index = () => {
           {groupCompetitionFetchStatus === "loading" ? (
               <LoadingOverlay visible />
           ) : (
-            <DataTable 
-              sx={{ height: '75vh'}}
-              withBorder
-              borderRadius="sm"
-              withColumnBorders
-              striped
-              highlightOnHover
-              columns={[{accessor: "title"}, {accessor: "metric"}, {accessor: "id"}, ]}
-              records={groupCompetition}
-              rowContextMenu={{
-                trigger: 'click',
-                items: (record) => [
-                  {
-                    key: 'delete',
-                    color: 'red',
-                    title: `Delete Event: "${record.title}"`,
-                    //put wom delete action in the onclick function
-                    onClick: () => {undefined}
-                  },
-                ],
-              }}
+            <FullCalendar
+              plugins={[ dayGridPlugin ]}
+              initialView='dayGridMonth'
+              events={calendarEvents}
             />
           )}
         </AppShell>
@@ -45,4 +35,4 @@ const index = () => {
   )
 }
 
-export default index
+export default index;

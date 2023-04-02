@@ -49,14 +49,14 @@ const InfoTable = ( details : CompetitionDetails ) => {
                             accessor: "players",
                             title: "RSN",   
                             render: (value) => { 
-                                return value.player.displayName 
+                                return value.progress.gained > 0 ? value.player.displayName : ""
                             }                
                         },
                         {
                             accessor: "gained",
                             title: "XP/KC Gained", 
                             render: (value) => { 
-                                return value.progress.gained
+                                return value.progress.gained > 0 ? value.progress.gained : ""
                             }
                         },
                     ]}
