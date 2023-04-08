@@ -1,4 +1,4 @@
-import { AppShell, Button, Group, LoadingOverlay, Modal, Input, NativeSelect, TextInput, Code, Radio } from '@mantine/core';
+import { AppShell, Button, Group, LoadingOverlay, Modal, NativeSelect, TextInput, Radio } from '@mantine/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -9,9 +9,9 @@ import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { Metric } from '@wise-old-man/utils';
 
-const index = () => {
+const Events = () => {
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
-  api.wom.findGroupCompetitions.useQuery({ id: 267 });
+  api.wom.findGroupCompetitions.useQuery({ id: 4498 });
 
   const calendarEvents = groupCompetition?.map((value) => {return {
     title: value.title, 
@@ -20,21 +20,21 @@ const index = () => {
   }})
 
   const [opened, { open, close }] = useDisclosure(false);
-  const [eventStart, setEventStart] = useState(new Date());
-  const [eventEnd, setEventEnd] = useState(new Date());
   const [value, setValue] = useState('');
-  const [submittedValues, setSubmittedValues] = useState('');
 
   const form = useForm({
     initialValues: {
       title: "",
-      metric: "",
-      startsAt: eventStart.toISOString(),
-      endsAt: eventEnd.toISOString(),
-      groupId: 3017,
-      groupVerificationCode: ""
+      metric: Metric.ATTACK as Metric,
+      startsAt: new Date(),
+      endsAt: new Date(),
+      groupId: 4498 || undefined,
+      groupVerificationCode: "603-162-513",
+      participants: []
     },
   })
+  
+  const createNewCompetition = api.wom.createCompetition.useMutation({});
 
   return (
     <>
@@ -52,13 +52,12 @@ const index = () => {
                 events={calendarEvents}
                 select={(info) => { 
                   open();
-                  setEventStart(info.start)
-                  setEventEnd(info.end)
-                  // alert('Start: ' + info.start.toISOString() + ' End: ' + info.end.toISOString());
+                  form.setFieldValue('startsAt', info.start)
+                  form.setFieldValue('endsAt', info.end)
                 }}
               />
               <Modal opened={opened} onClose={close} title="Create New Event">
-                <form onSubmit={form.onSubmit((values) => setSubmittedValues(JSON.stringify(values, null, 2)))}>
+                <form onSubmit={form.onSubmit(() => void createNewCompetition.mutateAsync(form.values))}>
                   <TextInput 
                     label="Event Title"
                     placeholder="Event Title"
@@ -85,9 +84,6 @@ const index = () => {
                     } 
                     {...form.getInputProps('metric')}
                   />
-                  <Code block mt={5}>
-                    {JSON.stringify(form.values, null, 2)}
-                  </Code>
                   <Button type="submit" mt="md">
                     Submit
                   </Button>
@@ -101,4 +97,4 @@ const index = () => {
   )
 }
 
-export default index;
+export default Events;

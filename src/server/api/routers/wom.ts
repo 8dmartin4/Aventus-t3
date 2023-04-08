@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Metric } from "@wise-old-man/utils";
 
 import {
   createTRPCRouter,
@@ -26,9 +27,26 @@ export const womRouter = createTRPCRouter({
         .query(({ ctx, input }) => {
             return ctx.womClient.competitions.getCompetitionDetails(input.id);
         }),
-    // createCompetition: protectedProcedure
-    //     .input(z.object({ title: z.string(), metric: z.string(), startsAt: z.date(), endsAt: z.date() }))
-    //     .mutation(({ ctx, input }) => {
-    //         return ctx.womClient.competitions.createCompetition(input);
-    //     }),
+    createCompetition: protectedProcedure
+        .input(z.object({ 
+            title: z.string(), 
+            metric: z.string(), 
+            startsAt: z.date(), 
+            endsAt: z.date(), 
+            groupId: z.number().optional(),
+            groupVerificationCode: z.string()
+        }))
+        .mutation(async({ ctx, input }) => {
+            await ctx.womClient.competitions.createCompetition({
+                title: input.title, 
+                metric: input.metric as Metric, 
+                startsAt: input.startsAt, 
+                endsAt: input.endsAt, 
+                groupId: input.groupId,
+                groupVerificationCode: input.groupVerificationCode,
+                participants: []
+            });
+            console.log("success")
+            return
+        }),
 });

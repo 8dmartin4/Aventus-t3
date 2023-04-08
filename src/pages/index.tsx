@@ -76,7 +76,7 @@ const Home: NextPage = () => {
                     <Title order={2}>Current Event:</Title>
                     <Title order={4}>{currentCompetitionDetails?.title}</Title>
                     <Title order={6}>Duration: {currentCompetitionDetails?.startsAt.toLocaleDateString()} to {currentCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
-                    <InfoTable {...currentCompetitionDetails!} />
+                    {currentCompetitionDetails && <InfoTable {...currentCompetitionDetails} />}
                   </Stack>
                 )}
                 {/* last event table */}
@@ -87,7 +87,7 @@ const Home: NextPage = () => {
                     <Title order={2}>Last Event:</Title>
                     <Title order={4}>{lastCompetitionDetails?.title}</Title>
                     <Title order={6}>Duration: {lastCompetitionDetails?.startsAt.toLocaleDateString()} to {lastCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
-                    <InfoTable {...lastCompetitionDetails!} />
+                    {lastCompetitionDetails && <InfoTable {...lastCompetitionDetails} />}
                   </Stack>
                 )}
               </SimpleGrid>

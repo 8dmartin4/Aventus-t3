@@ -1,7 +1,7 @@
 import { Stack, TextInput } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
-import { CompetitionDetails } from "@wise-old-man/utils";
+import type { CompetitionDetails } from "@wise-old-man/utils";
 import { DataTable } from "mantine-datatable";
 import { useEffect, useState } from "react"; 
 
@@ -26,6 +26,7 @@ const InfoTable = ( details : CompetitionDetails ) => {
             return true;
           })
         );
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [debouncedQuery]);
 
     return (

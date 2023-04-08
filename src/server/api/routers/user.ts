@@ -9,7 +9,7 @@ export const userRouter = createTRPCRouter({
     findOneUser: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(({ ctx, input }) => {
-        return ctx.prisma.user.findUnique({
+        return ctx.prisma.websiteUsers.findUnique({
             where: {
                 id: input.id,
             },
@@ -25,7 +25,7 @@ export const userRouter = createTRPCRouter({
             })
         )
         .mutation(({ ctx, input }) => {
-            return ctx.prisma.user.update({
+            return ctx.prisma.websiteUsers.update({
                 where: {
                     id: input.id
                 },
@@ -46,7 +46,7 @@ export const userRouter = createTRPCRouter({
             })
         )
         .query(({ ctx, input }) => {
-            return ctx.prisma.user.findMany({
+            return ctx.prisma.websiteUsers.findMany({
                 ...(input.role && { where: { role: input.role } }),
                 ...(input.team && { where: { team: input.team } }),
                 ...(input.take && { take: input.take }),
