@@ -57,7 +57,10 @@ const Events = () => {
                 }}
               />
               <Modal opened={opened} onClose={close} title="Create New Event">
-                <form onSubmit={form.onSubmit(() => void createNewCompetition.mutateAsync(form.values))}>
+                <form onSubmit={form.onSubmit(() => {
+                  void createNewCompetition.mutateAsync(form.values)
+                  close()
+                })}>
                   <TextInput 
                     label="Event Title"
                     placeholder="Event Title"
