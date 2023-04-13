@@ -77,7 +77,7 @@ const Events = () => {
                           color="red"
                           onClick={() => {
                             void deleteSelectedCompetition.mutateAsync({
-                              id: e.event.extendedProps.id, 
+                              id: e.event.extendedProps.id as number, 
                               groupVerificationCode: form.values.groupVerificationCode
                             })
                             .then(()=>{router.reload()})
