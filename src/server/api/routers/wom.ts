@@ -46,7 +46,12 @@ export const womRouter = createTRPCRouter({
                 groupVerificationCode: input.groupVerificationCode,
                 participants: []
             });
-            console.log("success")
             return
         }),
+    deleteCompetition: protectedProcedure
+        .input(z.object({ id: z.number(), groupVerificationCode: z.string() }))
+        .mutation(async({ ctx, input }) => {
+            await ctx.womClient.competitions.deleteCompetition(input.id, input.groupVerificationCode);
+            return
+        })
 });

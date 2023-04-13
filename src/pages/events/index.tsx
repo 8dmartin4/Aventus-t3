@@ -1,4 +1,4 @@
-import { AppShell, Button, Group, LoadingOverlay, Modal, NativeSelect, TextInput, Radio } from '@mantine/core';
+import { AppShell, Button, Group, LoadingOverlay, Modal, NativeSelect, TextInput, Radio, Menu, Text } from '@mantine/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -8,15 +8,19 @@ import { api } from '~/utils/api';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { Metric } from '@wise-old-man/utils';
+import router from 'next/router';
 
 const Events = () => {
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
-  api.wom.findGroupCompetitions.useQuery({ id: 4498 });
+  api.wom.findGroupCompetitions.useQuery({ id: 4530 });
 
   const calendarEvents = groupCompetition?.map((value) => {return {
-    title: value.title, 
+    title: value.title,
     start: value.startsAt.toISOString(), 
-    end: value.endsAt.toISOString()
+    end: value.endsAt.toISOString(),
+    extendedProps: {
+      id: value.id
+    }
   }})
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -28,13 +32,18 @@ const Events = () => {
       metric: Metric.ATTACK as Metric,
       startsAt: new Date(),
       endsAt: new Date(),
-      groupId: 4498 || undefined,
-      groupVerificationCode: "603-162-513",
+      groupId: 4530 || undefined,
+      groupVerificationCode: "370-080-236",
       participants: []
     },
+    validate: {
+      title: (value) => (value.length <= 0 ? 'Please enter a title for the event' : null),
+      metric: (value) => (value.length <= 0 ? 'Please select a metric for the event' : null)
+    }
   })
   
   const createNewCompetition = api.wom.createCompetition.useMutation({});
+  const deleteSelectedCompetition = api.wom.deleteCompetition.useMutation({});
 
   return (
     <>
@@ -55,10 +64,37 @@ const Events = () => {
                   form.setFieldValue('startsAt', info.start)
                   form.setFieldValue('endsAt', info.end)
                 }}
+                eventContent={(e) => {
+                  return(
+                    <Menu>
+                      <Menu.Target>
+                        <div>
+                          <Text>{e.event.title}</Text>  
+                        </div>
+                      </Menu.Target>
+                      <Menu.Dropdown>
+                        <Menu.Item 
+                          color="red"
+                          onClick={() => {
+                            void deleteSelectedCompetition.mutateAsync({
+                              id: e.event.extendedProps.id, 
+                              groupVerificationCode: form.values.groupVerificationCode
+                            })
+                            .then(()=>{router.reload()})
+                          }}
+                        >
+                          Delete Event
+                        </Menu.Item>
+                      </Menu.Dropdown>
+                    </Menu>
+                  )
+                }}
+                
               />
               <Modal opened={opened} onClose={close} title="Create New Event">
                 <form onSubmit={form.onSubmit(() => {
                   void createNewCompetition.mutateAsync(form.values)
+                  .then(()=>{router.reload()})
                   close()
                 })}>
                   <TextInput 
