@@ -102,6 +102,10 @@ const Events = () => {
                     placeholder="Event Title"
                     {...form.getInputProps('title')}
                   />
+                  <div>
+                    <Text>Event Start: {form.values.startsAt.toLocaleDateString()}</Text>  
+                    <Text>Event End: {form.values.endsAt.toLocaleDateString()}</Text>
+                  </div>
                   <Radio.Group
                     name="eventType"
                     label="Select Event Type"
