@@ -1,11 +1,10 @@
-import { AppShell, Button, Group, LoadingOverlay, Modal, NativeSelect, TextInput, Radio, Menu, Text } from '@mantine/core';
+import { AppShell, Button, Group, LoadingOverlay, Modal, NativeSelect, TextInput, Radio, Menu, Text, Alert, } from '@mantine/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import React, { useState } from 'react';
 import { Sidebar } from '~/components/Sidebar';
 import { api } from '~/utils/api';
-import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { Metric } from '@wise-old-man/utils';
 import router from 'next/router';
@@ -23,8 +22,13 @@ const Events = () => {
     }
   }})
 
-  const [opened, { open, close }] = useDisclosure(false);
-  const [value, setValue] = useState('');
+  const [openForm, setOpenForm] = useState(false);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [radioValue, setRadioValue] = useState('');
+  const [titleValue, setTitleValue] = useState('');
+  const [eventIdValue, setEventIdValue] = useState(0);
+
+  const closeAllModals = () => {setOpenForm(false); setOpenConfirmation(false);}
 
   const form = useForm({
     initialValues: {
@@ -60,7 +64,7 @@ const Events = () => {
                 selectable={true}
                 events={calendarEvents}
                 select={(info) => { 
-                  open();
+                  setOpenForm(true);
                   form.setFieldValue('startsAt', info.start)
                   form.setFieldValue('endsAt', info.end)
                 }}
@@ -76,11 +80,9 @@ const Events = () => {
                         <Menu.Item 
                           color="red"
                           onClick={() => {
-                            void deleteSelectedCompetition.mutateAsync({
-                              id: e.event.extendedProps.id as number, 
-                              groupVerificationCode: form.values.groupVerificationCode
-                            })
-                            .then(()=>{router.reload()})
+                            setTitleValue(e.event.title);
+                            setEventIdValue(e.event.extendedProps.id);
+                            setOpenConfirmation(true);
                           }}
                         >
                           Delete Event
@@ -91,7 +93,7 @@ const Events = () => {
                 }}
                 
               />
-              <Modal opened={opened} onClose={close} title="Create New Event">
+              <Modal opened={openForm} onClose={closeAllModals} title="Create New Event">
                 <form onSubmit={form.onSubmit(() => {
                   void createNewCompetition.mutateAsync(form.values)
                   .then(()=>{router.reload()})
@@ -100,28 +102,28 @@ const Events = () => {
                   <TextInput 
                     label="Event Title"
                     placeholder="Event Title"
+                    withAsterisk
                     {...form.getInputProps('title')}
                   />
-                  <div>
-                    <Text>Event Start: {form.values.startsAt.toLocaleDateString()}</Text>  
-                    <Text>Event End: {form.values.endsAt.toLocaleDateString()}</Text>
-                  </div>
+                  <Group mt="sm">
+                    <Text>Event Duration: {form.values.startsAt.toLocaleDateString()} to {form.values.endsAt.toLocaleDateString()}</Text>  
+                  </Group>
                   <Radio.Group
                     name="eventType"
                     label="Select Event Type"
                     mt="xs"
-                    value={value}
-                    onChange={setValue}
+                    value={radioValue}
+                    onChange={setRadioValue}
                     withAsterisk
                   >
-                    <Group >
+                    <Group>
                       <Radio value="SOTW" label="SOTW"/>
                       <Radio value="BOTW" label="BOTW"/>
                     </Group>
                   </Radio.Group>
                   <NativeSelect 
-                    mt="xs"
-                    data={ value=="SOTW" ?
+                    mt="md"
+                    data={ radioValue=="SOTW" ?
                       ['attack', 'defence', 'strength', 'hitpoints', 'ranged', 'prayer', 'magic', 'cooking', 'woodcutting', 'fletching', 'fishing', 'firemaking', 'crafting', 'smithing', 'mining', 'herblore', 'agility', 'thieving', 'slayer', 'farming', 'runecrafting', 'hunter', 'construction']
                       : ['abyssal_sire', 'alchemical_hydra', 'barrows_chests', 'bryophyta', 'callisto', 'cerberus', 'chambers_of_xeric', 'chambers_of_xeric_challenge_mode', 'chaos_elemental', 'chaos_fanatic', 'commander_zilyana', 'corporeal_beast', 'crazy_archaeologist', 'dagannoth_prime', 'dagannoth_rex', 'dagannoth_supreme', 'deranged_archaeologist', 'general_graardor', 'giant_mole', 'grotesque_guardians', 'hespori', 'kalphite_queen', 'king_black_dragon', 'kraken', 'kreearra', 'kril_tsutsaroth', 'mimic', 'nex', 'nightmare', 'phosanis_nightmare', 'obor', 'phantom_muspah', 'sarachnis', 'scorpia', 'skotizo', 'tempoross', 'the_gauntlet', 'the_corrupted_gauntlet', 'theatre_of_blood', 'theatre_of_blood_hard_mode', 'thermonuclear_smoke_devil', 'tombs_of_amascut', 'tombs_of_amascut_expert', 'tzkal_zuk', 'tztok_jad', 'venenatis', 'vetion', 'vorkath', 'wintertodt', 'zalcano', 'zulrah']
                     } 
@@ -131,6 +133,27 @@ const Events = () => {
                     Submit
                   </Button>
                 </form>
+              </Modal>
+              <Modal opened={openConfirmation} onClose={closeAllModals} title="Delete Event">
+                <Alert title="Confirm Deletion" color="red">
+                    Are you sure you want to delete "{titleValue}"? This action can not be undone.  
+                </Alert>
+                <Group sx={{display: 'flex', justifyContent: 'right'}}>
+                  <Button 
+                    color="red" 
+                    variant="outline"
+                    mt="sm"
+                    onClick={() => {
+                      void deleteSelectedCompetition.mutateAsync({
+                        id: eventIdValue as number, 
+                        groupVerificationCode: form.values.groupVerificationCode
+                      })
+                      .then(()=>{router.reload()})
+                    }}
+                  >
+                    Confirm Deletion
+                  </Button>
+                </Group>
               </Modal>
             </div>
           )}

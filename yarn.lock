@@ -272,12 +272,12 @@
   resolved "https://registry.npmjs.org/@mantine/hooks/-/hooks-6.0.2.tgz"
   integrity sha512-wLSkp0NRe4XN7JujIUvkKghIBJC9YZ33CJlrFbcBFLD6LiSLX7lWyWOsiFzXrPND0Hpgn3AjckFQGblA8n34XA==
 
-"@mantine/modals@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.npmjs.org/@mantine/modals/-/modals-6.0.2.tgz"
-  integrity sha512-R15OASfFfXdeDERzDf878AWjr6LgVTgGGX7SKHTd14VjyEi+QlzGvshZmSgO0hUo3gg2ONa8Pr9clZaFHY5HTQ==
+"@mantine/modals@^6.0.7":
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/@mantine/modals/-/modals-6.0.7.tgz#256864312f7b39f766278780bfcbec84ea8b487b"
+  integrity sha512-H83apNcglzARbKp296l5z6xEnBuAeQQk6frkGXVGB+bZhmjOdDsaropiq+CL/cqESm29vGFjjOnBl+yvYv9MzQ==
   dependencies:
-    "@mantine/utils" "6.0.2"
+    "@mantine/utils" "6.0.7"
 
 "@mantine/notifications@^6.0.2":
   version "6.0.2"
@@ -321,6 +321,11 @@
   version "6.0.2"
   resolved "https://registry.npmjs.org/@mantine/utils/-/utils-6.0.2.tgz"
   integrity sha512-fx+cmkb8PMpkr65nUs8YgaXFJbtNY+ybSXDfBxwFAWMTLAocbNo7vjkSvPWZVS1O2szPK/s4Rqdw0W76dyG4+w==
+
+"@mantine/utils@6.0.7":
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-6.0.7.tgz#fcbc9c809c33bd9c96fd12d7ca63d0c19550bafd"
+  integrity sha512-XMm66GNn9hXnc9s/twXzL9iqhzM8HLVOyuKDo4WUn/ZM6NEJYJJVcTTlSIXOPq9AWo8bI76vbAHkIry1aEbgmg==
 
 "@next-auth/prisma-adapter@^1.0.5":
   version "1.0.5"
