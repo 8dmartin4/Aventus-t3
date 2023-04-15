@@ -136,7 +136,7 @@ const Events = () => {
               </Modal>
               <Modal opened={openConfirmation} onClose={closeAllModals} title="Delete Event">
                 <Alert title="Confirm Deletion" color="red">
-                    Are you sure you want to delete "{titleValue}"? This action can not be undone.  
+                    Are you sure you want to delete {`"${titleValue}"`}? This action can not be undone.  
                 </Alert>
                 <Group sx={{display: 'flex', justifyContent: 'right'}}>
                   <Button 
