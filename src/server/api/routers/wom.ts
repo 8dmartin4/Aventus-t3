@@ -27,6 +27,11 @@ export const womRouter = createTRPCRouter({
         .query(({ ctx, input }) => {
             return ctx.womClient.competitions.getCompetitionDetails(input.id);
         }),
+    findTopFiveDetails: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .query(({ ctx, input }) => {
+            return ctx.womClient.competitions.getCompetitionTopHistory(input.id);
+        }),
     createCompetition: protectedProcedure
         .input(z.object({ 
             title: z.string(), 

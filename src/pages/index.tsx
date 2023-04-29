@@ -12,8 +12,11 @@ import {
   Title,
   Stack,
 } from "@mantine/core";
+import { Prism } from '@mantine/prism';
 import Head from "next/head";
+import { TopFiveChart } from "~/components/TopFiveChart";
 import InfoTable from "~/components/InfoTable";
+import { Line } from "react-chartjs-2";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -52,6 +55,8 @@ const Home: NextPage = () => {
     api.wom.findCompetitionDetails.useQuery({ id: (currentEvent?.id ? currentEvent?.id : 0) });
   const { data: lastCompetitionDetails, status: lastCompetitionDetailsFetchStatus } =
     api.wom.findCompetitionDetails.useQuery({ id: ( lastEvent?.id ? lastEvent?.id : 0 ) });
+  const { data: competitionTopFive, status: competitionTopFiveFetchStatus } = 
+    api.wom.findTopFiveDetails.useQuery({id: (lastEvent?.id ? lastEvent?.id : 0) });
 
   return (
     <>
@@ -72,23 +77,23 @@ const Home: NextPage = () => {
                 {currentCompetitionDetailsFetchStatus === "loading" ? (
                   <LoadingOverlay visible />
                 ) : (
-                  <Stack>
-                    <Title order={2}>Current Event:</Title>
-                    <Title order={4}>{currentCompetitionDetails?.title}</Title>
-                    <Title order={6}>Duration: {currentCompetitionDetails?.startsAt.toLocaleDateString()} to {currentCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
-                    {currentCompetitionDetails && <InfoTable {...currentCompetitionDetails} />}
-                  </Stack>
+                  // <Stack>
+                  //   <Title order={2}>Current Event Leaderboard:</Title>
+                  //   <Title order={4}>{lastCompetitionDetails?.title}</Title>
+                  //   <Title order={6}>Duration: {lastCompetitionDetails?.startsAt.toLocaleDateString()} to {lastCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
+                  //   {lastCompetitionDetails && <InfoTable {...lastCompetitionDetails} />}
+                  // </Stack>
+                  <div>
+                    {competitionTopFive && <TopFiveChart {...competitionTopFive} />}
+                  </div>
                 )}
                 {/* last event table */}
-                {lastCompetitionDetailsFetchStatus === "loading" ? (
+                {competitionTopFiveFetchStatus === "loading" ? (
                   <LoadingOverlay visible />
                 ) : (
-                  <Stack>
-                    <Title order={2}>Last Event:</Title>
-                    <Title order={4}>{lastCompetitionDetails?.title}</Title>
-                    <Title order={6}>Duration: {lastCompetitionDetails?.startsAt.toLocaleDateString()} to {lastCompetitionDetails?.endsAt.toLocaleDateString()}</Title>
-                    {lastCompetitionDetails && <InfoTable {...lastCompetitionDetails} />}
-                  </Stack>
+                  <Prism withLineNumbers language="json">
+                    {JSON.stringify((competitionTopFive || ""), null, ' ')}
+                  </Prism>
                 )}
               </SimpleGrid>
             )}

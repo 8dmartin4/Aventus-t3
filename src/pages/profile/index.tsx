@@ -2,7 +2,7 @@ import { AppShell } from '@mantine/core'
 import React from 'react'
 import { Sidebar } from '~/components/Sidebar'
 
-const index = () => {
+const Profile = () => {
   return (
     <main>
         <AppShell className='flex'>
@@ -13,4 +13,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Profile
