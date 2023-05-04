@@ -8,15 +8,19 @@ const config = {
       files: ["*.ts", "*.tsx"],
       parserOptions: {
         project: "tsconfig.json",
+        tsconfigRootDir: __dirname,
+        sourceType: "module"
       },
     },
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "./tsconfig.json",
+    project: "tsconfig.json",
+    tsconfigRootDir: __dirname,
+    sourceType: "module"
   },
   plugins: ["@typescript-eslint"],
-  extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "@typescript-eslint/parser"],
   rules: {
     "@typescript-eslint/consistent-type-imports": [
       "warn",

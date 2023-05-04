@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack, rem, Avatar, Divider } from '@mantine/core';
-import { IconUser, IconCalendarEvent, IconLogout, IconHome } from '@tabler/icons-react';
+import { IconUser, IconCalendarEvent, IconLogout, IconHome, IconNews } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
@@ -54,6 +54,7 @@ const mockdata = [
   { icon: IconHome, label: '/', tooltip: 'Home' },
   { icon: IconUser, label: 'profile', tooltip: 'Profile' },
   { icon: IconCalendarEvent, label: 'events', tooltip: 'Edit Events' },
+  { icon: IconNews, label: 'newsfeed', tooltip: 'Newsfeed'},
 ]
 
 

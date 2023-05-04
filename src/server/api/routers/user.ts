@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-} from "~/server/api/trpc";
+} from "../trpc";
 
 export const userRouter = createTRPCRouter({
     findOneUser: protectedProcedure

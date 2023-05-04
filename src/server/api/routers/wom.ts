@@ -1,16 +1,21 @@
 import { z } from "zod";
-import type { Metric } from "@wise-old-man/utils";
+import { CompetitionStatus, Metric } from "@wise-old-man/utils";
 
 import {
   createTRPCRouter,
   protectedProcedure,
-} from "~/server/api/trpc";
+} from "../trpc";
 
 export const womRouter = createTRPCRouter({
     findPlayersByName: protectedProcedure
         .input(z.object({ name: z.string() }))
         .query(({ ctx, input }) => {
             return ctx.womClient.players.searchPlayers(input.name, { limit: 1 });
+        }),
+    findPlayerCompetitionDetails: protectedProcedure
+        .input(z.object({ name: z.string() }))
+        .query(({ ctx, input }) => {
+            return ctx.womClient.players.getPlayerCompetitionStandings(input.name, {status: CompetitionStatus.ONGOING});
         }),
     findGroupsByName: protectedProcedure
         .input(z.object({ name: z.string() }))
@@ -26,11 +31,6 @@ export const womRouter = createTRPCRouter({
         .input(z.object({ id: z.number() }))
         .query(({ ctx, input }) => {
             return ctx.womClient.competitions.getCompetitionDetails(input.id);
-        }),
-    findTopFiveDetails: protectedProcedure
-        .input(z.object({ id: z.number() }))
-        .query(({ ctx, input }) => {
-            return ctx.womClient.competitions.getCompetitionTopHistory(input.id);
         }),
     createCompetition: protectedProcedure
         .input(z.object({ 
