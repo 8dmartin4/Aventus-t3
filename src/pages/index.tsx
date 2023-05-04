@@ -70,16 +70,14 @@ const Home: NextPage = () => {
     id: lastEvent?.id ? lastEvent?.id : 0,
   });
 
-  const progressGained = currentCompetitionDetails?.participations.map(
-    (player) => player.progress.gained
-  );
-
-  //compare player versus the 1st place competitor
+  //compare player versus the 1st place competitor using a custom react hook
   const versusLeader = useVersusLeader(
     (playerCompetitionDetails &&
       playerCompetitionDetails[0]?.progress?.gained) ||
       0,
-    progressGained || []
+    currentCompetitionDetails ?? {
+      participations: [{ progress: { gained: null } }],
+    }
   );
 
   return (

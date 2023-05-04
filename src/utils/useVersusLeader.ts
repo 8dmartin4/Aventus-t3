@@ -1,6 +1,12 @@
+import { CompetitionDetails } from '@wise-old-man/utils';
 import { useCallback } from 'react';
 
-const useVersusLeader = (playerProgress: number, compGained: number[]) => {
+const useVersusLeader = (playerProgress: number, currentComp:  { participations: { progress: { gained: number | null } }[]}) => {
+  const compGained = currentComp?.participations.map(
+    (player) => player.progress.gained
+  );
+
+
   const versusLeader = useCallback(() => {
     if (!playerProgress && !compGained[0]) {
       return 'Nothing to compare';
