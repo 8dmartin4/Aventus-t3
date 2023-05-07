@@ -35,6 +35,7 @@ export interface Category {
     _type: string
     _id: string
     title: string
+    color: string
     _updatedAt: string
     _createdAt: string
 }

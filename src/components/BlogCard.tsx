@@ -15,14 +15,24 @@ export const BlogCard = (post: Post) => {
         </Card.Section>
 
         <Group position="apart" mt="md" mb="xs">
-          <Title order={1} weight={500}>
-            {post.title}
-          </Title>
+          <div>
+            <Title order={1} weight={500}>
+              {post.title}
+            </Title>
+            <Text size="xs" color="dimmed">
+              Author: {post.author.name}
+            </Text>
+          </div>
           <Group position="right" spacing="xs">
-            {post.categories.map((cats: Category) => (
-              <Badge color="pink" variant="light">
+            {post.categories.map((category: Category) => (
+              <Badge
+                styles={{
+                  root: { backgroundColor: category.color, color: "black" },
+                }}
+                variant="light"
+              >
                 {" "}
-                {cats.title}{" "}
+                {category.title}{" "}
               </Badge>
             ))}
           </Group>
@@ -32,10 +42,7 @@ export const BlogCard = (post: Post) => {
             ? post.body[0].children[0].text
             : ""}
         </Text>
-        <Group position="apart" mt="md">
-          <Text size="xs" color="dimmed">
-            Author: {post.author.name}
-          </Text>
+        <Group position="right" mt="md">
           <Text size="xs" color="dimmed">
             Published {new Date(post.publishedAt).toLocaleString()}
           </Text>
