@@ -9,7 +9,8 @@ export const sanityClient = createClient({
 })
 
 export async function getPosts() {
-    const posts = await sanityClient.fetch(`*[_type == "post"]`)
+    const posts = await sanityClient.fetch(`*[_type == "post"]{
+        _id, title, publishedAt, categories[]->, author->, body}`)
 
     return posts
 }
@@ -19,5 +20,6 @@ export async function getOnePost(slug: string){
 
     return post
 }
+
 
 export default sanityClient

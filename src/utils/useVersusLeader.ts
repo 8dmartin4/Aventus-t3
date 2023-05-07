@@ -1,4 +1,3 @@
-import { CompetitionDetails } from '@wise-old-man/utils';
 import { useCallback } from 'react';
 
 const useVersusLeader = (playerProgress: number, currentComp:  { participations: { progress: { gained: number | null } }[]}) => {
