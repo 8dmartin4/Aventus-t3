@@ -10,7 +10,7 @@ export const sanityClient = createClient({
 
 export async function getPosts() {
     const posts = await sanityClient.fetch(`*[_type == "post"]{
-        _id, title, publishedAt, categories[]->, author->, body}`)
+        _id, title, publishedAt, categories[]->, author->, body, slug}`)
 
     return posts
 }
