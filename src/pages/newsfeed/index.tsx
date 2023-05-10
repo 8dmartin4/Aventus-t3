@@ -5,8 +5,10 @@ import { BlogCard } from "components/BlogCard";
 import React from "react";
 import { api } from "utils/api";
 import type { Post } from "types/sanity";
+import type { NextPage } from "next";
+import Link from "next/link";
 
-const Newsfeed = () => {
+const Newsfeed: NextPage = (props) => {
   const { data: posts } = api.sanity.getAllPosts.useQuery();
 
   return (
@@ -17,7 +19,9 @@ const Newsfeed = () => {
           <AppShell>
             <Sidebar />
             {posts.map((post: Post) => (
-              <BlogCard {...post} />
+              <Link href={`/newsfeed/${post.slug.current || ""}`}>
+                <BlogCard post={post} />
+              </Link>
             ))}
             <Prism language="json">{JSON.stringify(posts, null, `\t`)}</Prism>
           </AppShell>
