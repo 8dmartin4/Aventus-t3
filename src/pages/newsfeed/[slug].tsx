@@ -4,14 +4,24 @@ import { api } from "utils/api";
 import { useRouter } from "next/router";
 import { PortableText } from "@portabletext/react";
 import type { PortableTextBlock } from "@portabletext/types";
-import { Paper, Group, Divider, Title, AppShell, Box } from "@mantine/core";
+import {
+  Paper,
+  Group,
+  Divider,
+  Title,
+  AppShell,
+  Box,
+  Button,
+} from "@mantine/core";
 import { getImageDimensions } from "@sanity/asset-utils";
 import urlBuilder from "@sanity/image-url";
-import { IconQuote } from "@tabler/icons-react";
+import { IconArrowBack, IconQuote } from "@tabler/icons-react";
 import Link from "next/link";
 import sanity from "utils/sanity";
 import Image from "next/image";
 import { Sidebar } from "components/Sidebar";
+import type { NextPage } from "next";
+import { BlogCard } from "components/BlogCard";
 
 const myPortableTextComponents = {
   block: {
@@ -56,8 +66,8 @@ const myPortableTextComponents = {
   },
   list: {
     // Ex. 1: customizing common list types
-    bullet: ({ children }: any) => <ul className="mt-xl">{children}</ul>,
-    number: ({ children }: any) => <ol className="mt-lg">{children}</ol>,
+    bullet: ({ children }: any) => <ul className="mt-xl mx-6">{children}</ul>,
+    number: ({ children }: any) => <ol className="mt-lg mx-6">{children}</ol>,
 
     // Ex. 2: rendering custom lists
     checkmarks: ({ children }: any) => (
@@ -100,7 +110,7 @@ const myPortableTextComponents = {
     },
     callToAction: ({ value, isInline }: any) =>
       isInline ? (
-        <Link href={value.url}>{value.text}</Link>
+        <Link href={value.url || ""}>{value.text}</Link>
       ) : (
         <div className="callToAction">{value.text}</div>
       ),
@@ -112,7 +122,7 @@ const myPortableTextComponents = {
         ? "noreferrer noopener"
         : undefined;
       return (
-        <Link href={value.href} rel={rel}>
+        <Link href={value.href || ""} rel={rel}>
           {children}
         </Link>
       );
@@ -120,7 +130,7 @@ const myPortableTextComponents = {
   },
 };
 
-const Newsfeed = () => {
+const Newsfeed: NextPage = (props) => {
   const router = useRouter();
   const { data: post } = api.sanity.getOnePost.useQuery({
     slug: (router.query?.slug as string) || "",
@@ -131,18 +141,27 @@ const Newsfeed = () => {
       <main>
         <AppShell>
           <Sidebar />
-          {JSON.stringify(router.query)}
-          {post && (
+          <Link href="/newsfeed">
+            <Button variant="outline" leftIcon={<IconArrowBack />}>
+              Back to Newsfeed
+            </Button>
+          </Link>
+          {post && post.length > 0 && (
             <>
               <Box m={"20px"}>
-                <PortableText
-                  components={myPortableTextComponents}
-                  value={post[0].body as PortableTextBlock}
+                <BlogCard
+                  post={post[0]}
+                  body={
+                    <PortableText
+                      components={myPortableTextComponents}
+                      value={post[0].body as PortableTextBlock}
+                    />
+                  }
                 />
               </Box>
-              {/* <Prism language="json">
+              <Prism language="json">
                 {JSON.stringify(post[0], null, `\t`)}
-              </Prism> */}
+              </Prism>
             </>
           )}
         </AppShell>
