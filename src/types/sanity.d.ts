@@ -6,6 +6,7 @@ export interface Post {
     categories: Category[]
     author: Author
     slug: Slug
+    imageURL: string
 }
 
 export interface Body {
@@ -50,7 +51,7 @@ export interface Author {
     _updatedAt: string
     slug: Slug
     _createdAt: string
-    womLink: URL
+    womLink: string
     rsn: string
 }
 

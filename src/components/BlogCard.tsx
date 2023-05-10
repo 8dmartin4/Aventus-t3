@@ -9,11 +9,7 @@ export const BlogCard = (post: Post) => {
       <Link href={`/newsfeed/${post.slug.current}`}>
         <Card shadow="sm" padding="lg" radius="md" withBorder mb="20px">
           <Card.Section>
-            <Image
-              src="https://cdnb.artstation.com/p/assets/images/images/040/564/429/medium/surface-digital-art-osrs-oldwiseman-1.jpg?1629229064"
-              height={160}
-              alt="Soulwars Art"
-            />
+            <Image src={post.imageURL} height={160} alt="Soulwars Art" />
           </Card.Section>
 
           <Group position="apart" mt="md" mb="xs">
