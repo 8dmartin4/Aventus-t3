@@ -12,7 +12,7 @@ import Link from "next/link";
 import React, { type ReactNode } from "react";
 import type { Category, Post } from "types/sanity";
 
-export const BlogCard = (props: { post: Post; body: ReactNode }) => {
+export const BlogCard = (props: { post: Post; body?: ReactNode }) => {
   return (
     <>
       <Card shadow="sm" padding="lg" radius="md" withBorder mb="20px">
