@@ -148,7 +148,7 @@ const Newsfeed: NextPage = (props) => {
           </Link>
           {post && post.length > 0 && (
             <>
-              <Box m={"20px"}>
+              <Box mt={"20px"}>
                 <BlogCard
                   post={post[0]}
                   body={
