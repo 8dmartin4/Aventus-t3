@@ -5,6 +5,7 @@ import {
   Group,
   Image,
   SimpleGrid,
+  Space,
   Stack,
   Text,
   Title,
@@ -66,12 +67,14 @@ export const BlogCard = ({ post, body }: { post: Post; body?: ReactNode }) => {
             body
           ) : (
             <>
-              <Stack>
+              <Stack justify="space-between" h="150px">
                 {post.body[0]?.children && post.body[0]?.children[0]
                   ? post.body[0].children[0].text.substring(0, 200)
                   : ""}
                 <Button variant="light" color="blue">
-                  Read More...
+                  <Link href={`/newsfeed/${post.slug.current || ""}`}>
+                    Read More...
+                  </Link>
                 </Button>
               </Stack>
             </>

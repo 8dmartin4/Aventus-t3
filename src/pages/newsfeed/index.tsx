@@ -22,9 +22,7 @@ const Newsfeed: NextPage = (props) => {
             <Sidebar />
             <SimpleGrid cols={isMobile ? 1 : 2} className="w-full">
               {posts.map((post: Post) => (
-                <Link href={`/newsfeed/${post.slug.current || ""}`}>
-                  <BlogCard post={post} />
-                </Link>
+                <BlogCard post={post} />
               ))}
             </SimpleGrid>
           </AppShell>
