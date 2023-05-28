@@ -22,7 +22,7 @@ const server = z.object({
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
   SANITY_API_TOKEN: z.string(),
-  WOMVCODE: z.string()
+  WOM_VERIFICATION_CODE: z.string()
 });
 
 /**
@@ -47,7 +47,7 @@ const processEnv = {
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   SANITY_API_TOKEN: process.env.SANITY_API_TOKEN,
-  WOMVCODE: process.env.WOMVCODE
+  WOM_VERIFICATION_CODE: process.env.WOM_VERIFICATION_CODE
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

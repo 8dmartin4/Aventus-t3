@@ -54,7 +54,7 @@ const Events = () => {
       startsAt: new Date(),
       endsAt: new Date(),
       groupId: 267 || undefined,
-      groupVerificationCode: process.env.WOMVCODE || "",
+      groupVerificationCode: process.env.WOM_VERIFICATION_CODE || "",
       participants: [],
     },
     validate: {
