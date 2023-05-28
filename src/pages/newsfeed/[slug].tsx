@@ -159,9 +159,6 @@ const Newsfeed: NextPage = (props) => {
                   }
                 />
               </Box>
-              <Prism language="json">
-                {JSON.stringify(post[0], null, `\t`)}
-              </Prism>
             </>
           )}
         </AppShell>

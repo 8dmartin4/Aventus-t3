@@ -23,7 +23,7 @@ import router from "next/router";
 
 const Events = () => {
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
-    api.wom.findGroupCompetitions.useQuery({ id: 4530 });
+    api.wom.findGroupCompetitions.useQuery({ id: 267 });
 
   const calendarEvents = groupCompetition?.map((value) => {
     return {
@@ -53,8 +53,8 @@ const Events = () => {
       metric: Metric.ATTACK as Metric,
       startsAt: new Date(),
       endsAt: new Date(),
-      groupId: 4530 || undefined,
-      groupVerificationCode: "370-080-236",
+      groupId: 267 || undefined,
+      groupVerificationCode: process.env.WOMVCODE || "",
       participants: [],
     },
     validate: {
