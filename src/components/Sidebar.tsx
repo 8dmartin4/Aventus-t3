@@ -76,17 +76,24 @@ function NavbarLink({ icon: Icon, tooltip, active, onClick }: NavbarLinkProps) {
   );
 }
 
-const mockdata = [
-  { icon: IconHome, label: "/", tooltip: "Home" },
-  { icon: IconCalendarEvent, label: "/events", tooltip: "Edit Events" },
-  { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
-];
-
 export const Sidebar = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const links = mockdata.map((link) => (
+  const linkData = [
+    { icon: IconHome, label: "/", tooltip: "Home" },
+    {
+      icon: IconCalendarEvent,
+      label: "/events",
+      tooltip:
+        session && session.user?.role && session.user.role.includes("ADMIN")
+          ? "Edit Events"
+          : "Events",
+    },
+    { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
+  ];
+
+  const links = linkData.map((link) => (
     <NavbarLink
       {...link}
       key={link.label}

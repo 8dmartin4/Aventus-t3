@@ -21,8 +21,9 @@ import { useForm } from "@mantine/form";
 import { Metric } from "@wise-old-man/utils";
 import router from "next/router";
 import { useSession } from "next-auth/react";
+import { NextPage } from "next";
 
-const Events = () => {
+const Events: NextPage = (props) => {
   const { data: session } = useSession();
 
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
@@ -86,7 +87,9 @@ const Events = () => {
                 selectable={true}
                 events={calendarEvents}
                 select={
-                  session
+                  session &&
+                  session.user?.role &&
+                  session.user.role.includes("ADMIN")
                     ? (info) => {
                         setOpenForm(true);
                         form.setFieldValue("startsAt", info.start);
