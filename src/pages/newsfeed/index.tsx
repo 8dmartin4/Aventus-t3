@@ -1,12 +1,10 @@
 import { AppShell, SimpleGrid } from "@mantine/core";
-import { Prism } from "@mantine/prism";
 import { Sidebar } from "components/Sidebar";
 import { BlogCard } from "components/BlogCard";
 import React from "react";
 import { api } from "utils/api";
 import type { Post } from "types/sanity";
 import type { NextPage } from "next";
-import Link from "next/link";
 import { useMediaQuery } from "@mantine/hooks";
 
 const Newsfeed: NextPage = (props) => {

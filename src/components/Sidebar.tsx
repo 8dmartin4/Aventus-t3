@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import {
   Navbar,
   Center,
@@ -12,8 +11,8 @@ import {
   Divider,
 } from "@mantine/core";
 import {
-  IconUser,
   IconCalendarEvent,
+  IconLogin,
   IconLogout,
   IconHome,
   IconNews,
@@ -79,7 +78,6 @@ function NavbarLink({ icon: Icon, tooltip, active, onClick }: NavbarLinkProps) {
 
 const mockdata = [
   { icon: IconHome, label: "/", tooltip: "Home" },
-  { icon: IconUser, label: "/profile", tooltip: "Profile" },
   { icon: IconCalendarEvent, label: "/events", tooltip: "Edit Events" },
   { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
 ];
@@ -114,7 +112,7 @@ export const Sidebar = () => {
           alt="user avatar"
         />
       </Center>
-      <Center mt={15}>{session?.user?.name}</Center>
+      <Center mt={15}>{session?.user?.name || "Guest"}</Center>
       <Divider my="lg" size="md" />
       <Navbar.Section grow mt={10}>
         <Stack justify="center" spacing={10}>
@@ -123,12 +121,21 @@ export const Sidebar = () => {
       </Navbar.Section>
       <Navbar.Section>
         <Stack justify="center" spacing={10}>
-          <NavbarLink
-            icon={IconLogout}
-            label="Logout"
-            tooltip="Log Out"
-            onClick={() => void signOut()}
-          />
+          {session ? (
+            <NavbarLink
+              icon={IconLogout}
+              label="Logout"
+              tooltip="Log Out"
+              onClick={() => void signOut()}
+            />
+          ) : (
+            <NavbarLink
+              icon={IconLogin}
+              label="Login"
+              tooltip="Log In"
+              onClick={() => void signIn()}
+            />
+          )}
         </Stack>
       </Navbar.Section>
     </Navbar>

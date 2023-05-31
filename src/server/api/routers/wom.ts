@@ -4,6 +4,7 @@ import { CompetitionStatus, Metric } from "@wise-old-man/utils";
 import {
   createTRPCRouter,
   protectedProcedure,
+  publicProcedure,
 } from "../trpc";
 
 export const womRouter = createTRPCRouter({
@@ -22,7 +23,7 @@ export const womRouter = createTRPCRouter({
         .query(({ ctx, input }) => {
             return ctx.womClient.groups.searchGroups(input.name, { limit: 1 });
         }),
-    findGroupCompetitions: protectedProcedure
+    findGroupCompetitions: publicProcedure
         .input(z.object({ id: z.number() }))
         .query(({ ctx, input }) => {
             return ctx.womClient.groups.getGroupCompetitions(input.id);

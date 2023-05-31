@@ -3,24 +3,25 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "utils/api";
 import { Sidebar } from "components/Sidebar";
 import {
-  Text,
   Button,
   LoadingOverlay,
   AppShell,
   SimpleGrid,
   Title,
   Stack,
-  BackgroundImage,
-  Box,
+  Center,
+  Card,
+  Image,
 } from "@mantine/core";
-import { Prism } from "@mantine/prism";
 import Head from "next/head";
 import { TopFiveChart } from "components/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
+import Link from "next/link";
+import { useMediaQuery } from "@mantine/hooks";
 
 const Home: NextPage = () => {
-  const { data: sessionData } = useSession();
-  const username = sessionData?.user?.name as string;
+  const { data: session } = useSession();
+  const username = (session?.user?.name as string) || "Guest";
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
     api.wom.findGroupCompetitions.useQuery({ id: 267 });
   const {
@@ -79,6 +80,7 @@ const Home: NextPage = () => {
       participations: [{ progress: { gained: null } }],
     }
   );
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <>
@@ -88,87 +90,82 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {sessionData ? (
-          <AppShell className="flex">
-            <Sidebar />
-            {groupCompetitionFetchStatus === "loading" ? (
-              <LoadingOverlay visible />
-            ) : (
-              <SimpleGrid cols={1} spacing="sm" verticalSpacing="sm">
-                {/* current event table */}
-                {currentCompetitionDetailsFetchStatus === "loading" ? (
-                  <LoadingOverlay visible />
-                ) : (
-                  <Stack>
-                    <Title order={2}>Current Event Leaderboard:</Title>
-                    <Title order={4}>{currentCompetitionDetails?.title}</Title>
-                    <Title order={6}>
-                      Duration:{" "}
-                      {currentCompetitionDetails?.startsAt.toLocaleDateString()}{" "}
-                      to{" "}
-                      {currentCompetitionDetails?.endsAt.toLocaleDateString()}
-                    </Title>
-                    {currentCompetitionDetails && (
-                      <TopFiveChart {...currentCompetitionDetails} />
-                    )}
-                  </Stack>
-                )}
-                {/* last event table */}
-                {currentCompetitionDetailsFetchStatus === "loading" ? (
-                  <LoadingOverlay visible />
-                ) : (
-                  <Stack>
-                    <Title order={2}>
-                      Your Total XP/KC Gained is:{" "}
-                      {playerCompetitionDetails &&
-                        playerCompetitionDetails[0]?.progress?.gained}
-                    </Title>
-                    <Title order={2}>{versusLeader()}</Title>
-                  </Stack>
-                )}
+        <AppShell className="flex">
+          <Sidebar />
+          {session ? (
+            <SimpleGrid cols={1} spacing="sm" verticalSpacing="sm">
+              {/* current event table */}
+              {currentCompetitionDetailsFetchStatus === "loading" ? (
+                <LoadingOverlay visible />
+              ) : (
+                <Stack>
+                  <Title order={2}>Current Event Leaderboard:</Title>
+                  <Title order={4}>{currentCompetitionDetails?.title}</Title>
+                  <Title order={6}>
+                    Duration:{" "}
+                    {currentCompetitionDetails?.startsAt.toLocaleDateString()}{" "}
+                    to {currentCompetitionDetails?.endsAt.toLocaleDateString()}
+                  </Title>
+                  {currentCompetitionDetails && (
+                    <TopFiveChart {...currentCompetitionDetails} />
+                  )}
+                </Stack>
+              )}
+              {/* last event table */}
+              {currentCompetitionDetailsFetchStatus === "loading" ? (
+                <LoadingOverlay visible />
+              ) : (
+                <Stack>
+                  <Title order={2}>
+                    Your Total XP/KC Gained is:{" "}
+                    {playerCompetitionDetails &&
+                      playerCompetitionDetails[0]?.progress?.gained}
+                  </Title>
+                  <Title order={2}>{versusLeader()}</Title>
+                </Stack>
+              )}
+            </SimpleGrid>
+          ) : (
+            // if not signed in display sign in page
+            <div>
+              <SimpleGrid cols={isMobile ? 1 : 3} className="w-full">
+                <div></div>
+                <Center>
+                  <Card
+                    shadow="sm"
+                    padding="lg"
+                    radius="md"
+                    withBorder
+                    mt="25vh"
+                  >
+                    <Card.Section>
+                      <Image
+                        src={
+                          "https://cdnb.artstation.com/p/assets/images/images/040/564/429/medium/surface-digital-art-osrs-oldwiseman-1.jpg?1629229064"
+                        }
+                        height={160}
+                        alt={"OSRS Soulwars Promotional Image"}
+                      />
+                    </Card.Section>
+                    <Stack justify="space-between" mt="15px">
+                      <Title order={4}>
+                        Welcome to the Aventus OSRS Clan website! Sign in using
+                        your discord account to access more features.
+                      </Title>
+                      <Button
+                        variant="light"
+                        color="blue"
+                        onClick={() => void signIn()}
+                      >
+                        Sign In
+                      </Button>
+                    </Stack>
+                  </Card>
+                </Center>
               </SimpleGrid>
-            )}
-          </AppShell>
-        ) : (
-          // if not signed in display sign in page
-          <div>
-            <Box sx={{ width: "vw", height: "vh" }}>
-              <BackgroundImage src="https://cdnb.artstation.com/p/assets/images/images/040/564/429/medium/surface-digital-art-osrs-oldwiseman-1.jpg?1629229064">
-                <Text
-                  p={20}
-                  fw={700}
-                  sx={{ fontFamily: "Greycliff CF, sans-serif" }}
-                  color="blue"
-                  align="right"
-                >
-                  <h1>Welcome To Aventus</h1>
-                </Text>
-
-                <Text>
-                  <h2>
-                    An OldSchool RuneScape clan focused on community events. We
-                    host weekly boss/skill of the week events and semiannual
-                    large events such as bingos and more! Join CC 'Aventus' to
-                    chat with us and learn more.
-                  </h2>
-                </Text>
-
-                <Button
-                  variant="outline"
-                  color="black"
-                  radius="md"
-                  size="xl"
-                  sx={{ fontFamily: "Greycliff CF, sans-serif" }}
-                  onClick={
-                    sessionData ? () => void signOut() : () => void signIn()
-                  }
-                >
-                  Sign In
-                </Button>
-              </BackgroundImage>
-            </Box>
-          </div>
-        )}
+            </div>
+          )}
+        </AppShell>
       </main>
     </>
   );

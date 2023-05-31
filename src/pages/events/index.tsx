@@ -20,18 +20,21 @@ import { api } from "utils/api";
 import { useForm } from "@mantine/form";
 import { Metric } from "@wise-old-man/utils";
 import router from "next/router";
+import { useSession } from "next-auth/react";
 
 const Events = () => {
+  const { data: session } = useSession();
+
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
     api.wom.findGroupCompetitions.useQuery({ id: 267 });
 
-  const calendarEvents = groupCompetition?.map((value) => {
+  const calendarEvents = groupCompetition?.map((competition) => {
     return {
-      title: value.title,
-      start: value.startsAt.toISOString(),
-      end: value.endsAt.toISOString(),
+      title: competition.title,
+      start: competition.startsAt.toISOString(),
+      end: competition.endsAt.toISOString(),
       extendedProps: {
-        id: value.id,
+        id: competition.id,
       },
     };
   });
@@ -58,10 +61,10 @@ const Events = () => {
       participants: [],
     },
     validate: {
-      title: (value) =>
-        value.length <= 0 ? "Please enter a title for the event" : null,
-      metric: (value) =>
-        value.length <= 0 ? "Please select a metric for the event" : null,
+      title: (title) =>
+        title.length <= 0 ? "Please enter a title for the event" : null,
+      metric: (metric) =>
+        metric.length <= 0 ? "Please select a metric for the event" : null,
     },
   });
 
@@ -82,11 +85,15 @@ const Events = () => {
                 initialView="dayGridMonth"
                 selectable={true}
                 events={calendarEvents}
-                select={(info) => {
-                  setOpenForm(true);
-                  form.setFieldValue("startsAt", info.start);
-                  form.setFieldValue("endsAt", info.end);
-                }}
+                select={
+                  session
+                    ? (info) => {
+                        setOpenForm(true);
+                        form.setFieldValue("startsAt", info.start);
+                        form.setFieldValue("endsAt", info.end);
+                      }
+                    : () => {}
+                }
                 eventContent={(e) => {
                   return (
                     <Menu>
@@ -95,18 +102,24 @@ const Events = () => {
                           <Text>{e.event.title}</Text>
                         </div>
                       </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item
-                          color="red"
-                          onClick={() => {
-                            setTitleValue(e.event.title);
-                            setEventIdValue(e.event.extendedProps.id as number);
-                            setOpenConfirmation(true);
-                          }}
-                        >
-                          Delete Event
-                        </Menu.Item>
-                      </Menu.Dropdown>
+                      {session ? (
+                        <Menu.Dropdown>
+                          <Menu.Item
+                            color="red"
+                            onClick={() => {
+                              setTitleValue(e.event.title);
+                              setEventIdValue(
+                                e.event.extendedProps.id as number
+                              );
+                              setOpenConfirmation(true);
+                            }}
+                          >
+                            Delete Event
+                          </Menu.Item>
+                        </Menu.Dropdown>
+                      ) : (
+                        <></>
+                      )}
                     </Menu>
                   );
                 }}
