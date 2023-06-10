@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { api } from "utils/api";
 import { Sidebar } from "components/Sidebar";
 import {
@@ -16,11 +16,11 @@ import {
 import Head from "next/head";
 import { TopFiveChart } from "components/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
-import Link from "next/link";
 import { useMediaQuery } from "@mantine/hooks";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const username = (session?.user?.name as string) || "Guest";
   const { data: groupCompetition, status: groupCompetitionFetchStatus } =
     api.wom.findGroupCompetitions.useQuery({ id: 267 });
@@ -64,12 +64,6 @@ const Home: NextPage = () => {
   } = api.wom.findCompetitionDetails.useQuery({
     id: currentEvent?.id ? currentEvent?.id : 0,
   });
-  const {
-    data: lastCompetitionDetails,
-    status: lastCompetitionDetailsFetchStatus,
-  } = api.wom.findCompetitionDetails.useQuery({
-    id: lastEvent?.id ? lastEvent?.id : 0,
-  });
 
   //compare player versus the 1st place competitor using a custom react hook
   const versusLeader = useVersusLeader(
@@ -80,7 +74,6 @@ const Home: NextPage = () => {
       participations: [{ progress: { gained: null } }],
     }
   );
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <>

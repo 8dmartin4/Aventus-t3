@@ -16,8 +16,8 @@ datasource db {
 
 // Necessary for Next auth
 model Account {
-    id                String @id @default(auto()) @map("_id") @db.ObjectId
-    userId            String @db.ObjectId
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId            String  @db.ObjectId
     type              String
     provider          String
     providerAccountId String
@@ -34,23 +34,25 @@ model Account {
 }
 
 model Session {
-    id           String @id @default(auto()) @map("_id") @db.ObjectId
-    sessionToken String @unique
-    userId       String @db.ObjectId
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    sessionToken String   @unique
+    userId       String   @db.ObjectId
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String @id @default(auto()) @map("_id") @db.ObjectId
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    role          String? @default("USER")
-    team          String? @default("NONE")
-    accounts      Account[]
-    sessions      Session[]
+    id               String             @id @default(auto()) @map("_id") @db.ObjectId
+    name             String?
+    email            String?            @unique
+    emailVerified    DateTime?
+    image            String?
+    role             String?            @default("USER")
+    team             String?            @default("NONE")
+    osrsName         String?
+    accounts         Account[]
+    sessions         Session[]
+    StaffApplication StaffApplication[]
 }
 
 model VerificationToken {
@@ -62,7 +64,7 @@ model VerificationToken {
 }
 
 model BotUsers {
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id          String  @id @default(auto()) @map("_id") @db.ObjectId
     discordid   String?
     splits      BigInt?
     points      Int?
@@ -71,13 +73,20 @@ model BotUsers {
 }
 
 model OSRSNames {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    id        String  @id @default(auto()) @map("_id") @db.ObjectId
     osrsname  String?
     discordid String?
 }
 
 model MainName {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    id        String  @id @default(auto()) @map("_id") @db.ObjectId
     mainname  String?
     discordid String?
+}
+
+model StaffApplication {
+    id               String  @id @default(auto()) @map("_id") @db.ObjectId
+    submittingUserId String  @db.ObjectId
+    status           String? @default("Pending Review")
+    submittingUser   User    @relation(fields: [submittingUserId], references: [id], onDelete: Cascade)
 }

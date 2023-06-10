@@ -16,6 +16,7 @@ import {
   IconLogout,
   IconHome,
   IconNews,
+  IconForms,
 } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 
@@ -91,6 +92,11 @@ export const Sidebar = () => {
           : "Events",
     },
     { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
+    {
+      icon: IconForms,
+      label: "/staffapplication",
+      tooltip: "Staff Application Form",
+    },
   ];
 
   const links = linkData.map((link) => (
