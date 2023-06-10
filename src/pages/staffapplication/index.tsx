@@ -64,6 +64,7 @@ function ContextField() {
         <Checkbox.Group
           label="Select your desired roles to apply for:"
           withAsterisk
+          {...form.getInputProps("desiredRole")}
         >
           <Group mt="xs">
             <Checkbox value="Events" label="Events" />
@@ -109,7 +110,7 @@ const StaffApplicaton: NextPage = () => {
       osrsName: "",
       discordName: "",
       staffReferenceName: "",
-      desiredRole: "Events",
+      desiredRole: [],
       joinedAventusInput: "",
       reasonForApplicationInput: "",
       reasonForGoodFitInput: "",

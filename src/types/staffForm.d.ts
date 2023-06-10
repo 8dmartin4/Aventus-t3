@@ -5,12 +5,7 @@ export interface StaffApplicationForm {
   osrsName: string;
   discordName: string;
   staffReferenceName: string;
-  desiredRole:
-    "Events" |
-    "Human Resources" |
-    "Highlights" |
-    "Tech" |
-    "Recruitment";
+  desiredRole: string[];
   joinedAventusInput: string;
   reasonForApplicationInput: string;
   reasonForGoodFitInput: string;
