@@ -51,20 +51,18 @@ function ContextField() {
             <Radio value="false" label="No" />
           </Group>
         </Radio.Group>
-        {radioValue == "true" ? (
+        {radioValue === "true" && (
           <TextInput
             label="OSRS Name or Discord Name of staff member who referred you"
             placeholder="staff name"
             withAsterisk
             {...form.getInputProps("staffReferenceName")}
           />
-        ) : (
-          <></>
         )}
         <Checkbox.Group
-          label="Select your desired roles to apply for:"
+          label="Select the roles you would like to apply for:"
           withAsterisk
-          {...form.getInputProps("desiredRole")}
+          {...form.getInputProps("desiredRoles")}
         >
           <Group mt="xs">
             <Checkbox value="Events" label="Events" />
@@ -75,7 +73,7 @@ function ContextField() {
           </Group>
         </Checkbox.Group>
         <TextInput
-          label="When and how did you find/join the community?"
+          label="When and how did you find/join the Aventus community?"
           placeholder=""
           {...form.getInputProps("joinedAventusInput")}
         />
@@ -110,7 +108,7 @@ const StaffApplicaton: NextPage = () => {
       osrsName: "",
       discordName: "",
       staffReferenceName: "",
-      desiredRole: [],
+      desiredRoles: [],
       joinedAventusInput: "",
       reasonForApplicationInput: "",
       reasonForGoodFitInput: "",

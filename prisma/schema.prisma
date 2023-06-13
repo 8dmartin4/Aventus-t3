@@ -52,7 +52,7 @@ model User {
     osrsName         String?
     accounts         Account[]
     sessions         Session[]
-    StaffApplication StaffApplication[]
+    staffApplication StaffApplication[]
 }
 
 model VerificationToken {
@@ -85,8 +85,15 @@ model MainName {
 }
 
 model StaffApplication {
-    id               String  @id @default(auto()) @map("_id") @db.ObjectId
-    submittingUserId String  @db.ObjectId
-    status           String? @default("Pending Review")
-    submittingUser   User    @relation(fields: [submittingUserId], references: [id], onDelete: Cascade)
+    id                        String   @id @default(auto()) @map("_id") @db.ObjectId
+    submittingUserId          String   @db.ObjectId
+    status                    String?  @default("Pending Review")
+    submittingUser            User     @relation(fields: [submittingUserId], references: [id], onDelete: Cascade)
+    osrsName                  String
+    discordId                 String
+    staffReferenceName        String
+    desiredRoles              String[]
+    joinedAventusInput        String
+    reasonForApplicationInput String
+    reasonForGoodFitInput     String
 }
