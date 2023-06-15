@@ -8,6 +8,8 @@ export const TopFiveChart = (
 ): JSX.Element => {
   const ref = useRef();
 
+  const trackingMetric = currentCompData.title.includes("BOTW") ? "KC" : "XP";
+
   const progressGained = currentCompData.participations.map(
     (player) => player.progress.gained
   );
@@ -25,7 +27,7 @@ export const TopFiveChart = (
     ],
     datasets: [
       {
-        label: "XP/KC Gained",
+        label: `${trackingMetric} Gained`,
         data: [
           progressGained[0],
           progressGained[1],

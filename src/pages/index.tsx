@@ -67,6 +67,7 @@ const Home: NextPage = () => {
 
   //compare player versus the 1st place competitor using a custom react hook
   const versusLeader = useVersusLeader(
+    currentCompetitionDetails?.title || "",
     (playerCompetitionDetails &&
       playerCompetitionDetails[0]?.progress?.gained) ||
       0,
@@ -110,7 +111,10 @@ const Home: NextPage = () => {
               ) : (
                 <Stack>
                   <Title order={2}>
-                    Your Total XP/KC Gained is:{" "}
+                    {currentCompetitionDetails?.title &&
+                    currentCompetitionDetails?.title.includes("BOTW")
+                      ? "Your Total KC Gained is: "
+                      : "Your Total XP Gained is: "}
                     {playerCompetitionDetails &&
                       playerCompetitionDetails[0]?.progress?.gained}
                   </Title>

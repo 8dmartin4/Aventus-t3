@@ -9,7 +9,7 @@ export const staffApplicationRouter = createTRPCRouter({
     findStaffApplication: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(({ ctx, input }) => {
-        return ctx.prisma.StaffApplication.findUnique({
+        return ctx.prisma.staffApplication.findUnique({
             where: {
                 id: input.id,
             },
@@ -21,7 +21,12 @@ export const staffApplicationRouter = createTRPCRouter({
                 id: z.string(),
                 submittingUserId: z.string(),
                 status: z.string(),
-                submittingUser: z.string(),
+                submittingUser: z.object({
+                    id: z.string(),
+                    name: z.string(),
+                    email: z.string().email().nullish().optional(),
+                    image: z.string().nullish().optional(),
+                }),
                 osrsName: z.string(),
                 discordId: z.string(),
                 staffReferenceName: z.string(),
@@ -32,7 +37,7 @@ export const staffApplicationRouter = createTRPCRouter({
             })
         )
         .mutation(({ ctx, input }) => {
-            return ctx.prisma.StaffApplication.update({
+            return ctx.prisma.staffApplication.update({
                 where: {
                     id: input.id
                 },

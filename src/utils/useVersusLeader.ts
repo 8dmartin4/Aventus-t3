@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-const useVersusLeader = (playerProgress: number, currentComp:  { participations: { progress: { gained: number | null } }[]}) => {
+const useVersusLeader = (currentCompTitle: string, playerProgress: number, currentComp:  { participations: { progress: { gained: number | null } }[]}) => {
   const compGained = currentComp?.participations.map(
     (player) => player.progress.gained
   );
-
+  const trackingMetric = currentCompTitle.includes("BOTW") ? "KC" : "XP";
 
   const versusLeader = useCallback(() => {
     if (!playerProgress && !compGained[0]) {
@@ -20,13 +20,13 @@ const useVersusLeader = (playerProgress: number, currentComp:  { participations:
     if (playerProgress < firstPlace) {
       return `You are ${(firstPlace - playerProgress).toLocaleString(
         "en-US"
-      )} XP/KC behind first place.`;
+      )} ${trackingMetric} behind first place.`;
     }
 
     if (playerProgress > firstPlace) {
       return `You are ${(playerProgress - firstPlace).toLocaleString(
         "en-US"
-      )} XP/KC ahead of first place.`;
+      )} ${trackingMetric} ahead of first place.`;
     }
 
     return `Error parsing leaderboard data. Player gained: ${playerProgress || ''}, First place: ${compGained[0] || ''}`;
