@@ -21,12 +21,12 @@ export const staffApplicationRouter = createTRPCRouter({
                 id: z.string(),
                 submittingUserId: z.string(),
                 status: z.string(),
-                submittingUser: z.object({
-                    id: z.string(),
-                    name: z.string(),
-                    email: z.string().email().nullish().optional(),
-                    image: z.string().nullish().optional(),
-                }),
+                // submittingUser: z.object({
+                //     id: z.string(),
+                //     name: z.string(),
+                //     email: z.string().email().nullish().optional(),
+                //     image: z.string().nullish().optional(),
+                // }),
                 osrsName: z.string(),
                 discordId: z.string(),
                 staffReferenceName: z.string(),
@@ -42,10 +42,10 @@ export const staffApplicationRouter = createTRPCRouter({
                     id: input.id
                 },
                 data: {
-                    id: input.id,
+                    // id: input.id,
                     submittingUserId: input.submittingUserId,
                     status: input.status,
-                    submittingUser: input.submittingUser,
+                    // submittingUser: input.submittingUser,
                     osrsName: input.osrsName,
                     discordId: input.discordId,
                     staffReferenceName: input.staffReferenceName,
