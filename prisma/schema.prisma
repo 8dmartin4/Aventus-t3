@@ -88,7 +88,7 @@ model StaffApplication {
     id                        String   @id @default(auto()) @map("_id") @db.ObjectId
     submittingUserId          String   @db.ObjectId
     status                    String?  @default("Pending Review")
-    submittingUser            User     @relation(fields: [submittingUserId], references: [id], onDelete: Cascade)
+    // submittingUser            User     @relation(fields: [submittingUserId], references: [id], onDelete: Cascade)
     osrsName                  String
     discordId                 String
     staffReferenceName        String
@@ -96,4 +96,6 @@ model StaffApplication {
     joinedAventusInput        String
     reasonForApplicationInput String
     reasonForGoodFitInput     String
+    User                      User?    @relation(fields: [userId], references: [id])
+    userId                    String?  @db.ObjectId
 }
