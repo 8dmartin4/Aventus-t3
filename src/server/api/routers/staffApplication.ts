@@ -6,7 +6,7 @@ import {
 } from "../trpc";
 
 export const staffApplicationRouter = createTRPCRouter({
-    findStaffApplication: protectedProcedure
+    findStaffApplicationById: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(({ ctx, input }) => {
         return ctx.prisma.staffApplication.findUnique({
@@ -15,18 +15,22 @@ export const staffApplicationRouter = createTRPCRouter({
             },
         });
         }),
-    updateStaffApplication: protectedProcedure
+    findStaffApplicationsByUserId: protectedProcedure
+        .input(z.object({ userId: z.string() }))
+        .query(({ ctx, input }) => {
+        return ctx.prisma.staffApplication.findMany({
+            where: {
+                submittingUserId: input.userId,
+            },
+        });
+        }),
+    upsertOneStaffApplication: protectedProcedure
         .input(
             z.object({
                 id: z.string(),
                 submittingUserId: z.string(),
+                approvingUserId: z.string().optional(),
                 status: z.string(),
-                // submittingUser: z.object({
-                //     id: z.string(),
-                //     name: z.string(),
-                //     email: z.string().email().nullish().optional(),
-                //     image: z.string().nullish().optional(),
-                // }),
                 osrsName: z.string(),
                 discordId: z.string(),
                 staffReferenceName: z.string(),
@@ -37,22 +41,33 @@ export const staffApplicationRouter = createTRPCRouter({
             })
         )
         .mutation(({ ctx, input }) => {
-            return ctx.prisma.staffApplication.update({
+            return ctx.prisma.staffApplication.upsert({
                 where: {
                     id: input.id
                 },
-                data: {
-                    // id: input.id,
-                    submittingUserId: input.submittingUserId,
-                    status: input.status,
-                    // submittingUser: input.submittingUser,
-                    osrsName: input.osrsName,
-                    discordId: input.discordId,
-                    staffReferenceName: input.staffReferenceName,
-                    desiredRoles: input.desiredRoles,
-                    joinedAventusInput: input.joinedAventusInput,
-                    reasonForApplicationInput: input.reasonForApplicationInput,
-                    reasonForGoodFitInput: input.reasonForGoodFitInput,
+                create: {
+                  submittingUserId: input.submittingUserId,
+                  status: input.status,
+                  ...input.approvingUserId && { approvingUserId: input.approvingUserId },
+                  osrsName: input.osrsName,
+                  discordId: input.discordId,
+                  staffReferenceName: input.staffReferenceName,
+                  desiredRoles: input.desiredRoles,
+                  joinedAventusInput: input.joinedAventusInput,
+                  reasonForApplicationInput: input.reasonForApplicationInput,
+                  reasonForGoodFitInput: input.reasonForGoodFitInput,
+                },
+                update: {
+                  submittingUserId: input.submittingUserId,
+                  status: input.status,
+                  ...input.approvingUserId && { approvingUserId: input.approvingUserId },
+                  osrsName: input.osrsName,
+                  discordId: input.discordId,
+                  staffReferenceName: input.staffReferenceName,
+                  desiredRoles: input.desiredRoles,
+                  joinedAventusInput: input.joinedAventusInput,
+                  reasonForApplicationInput: input.reasonForApplicationInput,
+                  reasonForGoodFitInput: input.reasonForGoodFitInput,
                 },
             });
         }),
