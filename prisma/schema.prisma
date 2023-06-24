@@ -86,10 +86,12 @@ model MainName {
 }
 
 model StaffApplication {
-  id                        String   @id @default(auto()) @map("_id") @db.ObjectId
+  oid                       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                        String   @unique
   status                    String?  @default("Pending Review")
   osrsName                  String
-  discordId                 String
+  discordName               String
+  staffReference            Boolean
   staffReferenceName        String
   desiredRoles              String[]
   joinedAventusInput        String

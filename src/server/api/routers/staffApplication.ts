@@ -15,12 +15,29 @@ export const staffApplicationRouter = createTRPCRouter({
             },
         });
         }),
-    findStaffApplicationsByUserId: protectedProcedure
-        .input(z.object({ userId: z.string() }))
+    findPendingStaffApplicationsByUserId: protectedProcedure
+        .input(z.object({
+          userId: z.string(),
+        }))
         .query(({ ctx, input }) => {
         return ctx.prisma.staffApplication.findMany({
             where: {
                 submittingUserId: input.userId,
+                status: "Pending Review",
+            },
+        });
+        }),
+    findFinalizedStaffApplicationsByUserId: protectedProcedure
+        .input(z.object({
+          userId: z.string(),
+        }))
+        .query(({ ctx, input }) => {
+        return ctx.prisma.staffApplication.findMany({
+            where: {
+                submittingUserId: input.userId,
+                NOT: {
+                  status: "Pending Review"
+                }
             },
         });
         }),
@@ -32,9 +49,10 @@ export const staffApplicationRouter = createTRPCRouter({
                 approvingUserId: z.string().optional(),
                 status: z.string(),
                 osrsName: z.string(),
-                discordId: z.string(),
+                discordName: z.string(),
+                staffReference: z.boolean(),
                 staffReferenceName: z.string(),
-                desiredRoles: z.string(),
+                desiredRoles: z.string().array(),
                 joinedAventusInput: z.string(),
                 reasonForApplicationInput: z.string(),
                 reasonForGoodFitInput: z.string(),
@@ -47,10 +65,12 @@ export const staffApplicationRouter = createTRPCRouter({
                 },
                 create: {
                   submittingUserId: input.submittingUserId,
+                  id: input.id,
                   status: input.status,
                   ...input.approvingUserId && { approvingUserId: input.approvingUserId },
                   osrsName: input.osrsName,
-                  discordId: input.discordId,
+                  discordName: input.discordName,
+                  staffReference: input.staffReference,
                   staffReferenceName: input.staffReferenceName,
                   desiredRoles: input.desiredRoles,
                   joinedAventusInput: input.joinedAventusInput,
@@ -62,7 +82,8 @@ export const staffApplicationRouter = createTRPCRouter({
                   status: input.status,
                   ...input.approvingUserId && { approvingUserId: input.approvingUserId },
                   osrsName: input.osrsName,
-                  discordId: input.discordId,
+                  discordName: input.discordName,
+                  staffReference: input.staffReference,
                   staffReferenceName: input.staffReferenceName,
                   desiredRoles: input.desiredRoles,
                   joinedAventusInput: input.joinedAventusInput,

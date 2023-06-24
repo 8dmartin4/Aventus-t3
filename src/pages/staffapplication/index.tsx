@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { NextPage } from "next";
 import { Sidebar } from "components/Sidebar";
 import { useSession } from "next-auth/react";
@@ -9,19 +9,21 @@ import {
   Center,
   Checkbox,
   Group,
+  LoadingOverlay,
   Radio,
   Stack,
   TextInput,
 } from "@mantine/core";
 import { createFormContext } from "@mantine/form";
 import { StaffApplicationForm } from "types/staffForm";
+import { v4 } from "uuid";
+import { api } from "utils/api";
 
 const [FormProvider, useFormContext, useForm] =
   createFormContext<StaffApplicationForm>();
 
 function ContextField() {
   const form = useFormContext();
-  const [radioValue, setRadioValue] = useState("");
 
   return (
     <>
@@ -42,16 +44,21 @@ function ContextField() {
           name="staffReference"
           label="Were you referred by a staff member?"
           mt="xs"
-          value={radioValue}
-          onChange={setRadioValue}
           withAsterisk
+          onChange={(value)=>{
+            form.setValues({
+              ...form.values,
+              staffReference: value === "true"
+            })
+          }}
+          value={form.values.staffReference ? "true" : "false"}
         >
           <Group>
             <Radio value="true" label="Yes" />
             <Radio value="false" label="No" />
           </Group>
         </Radio.Group>
-        {radioValue === "true" && (
+        {form.values.staffReference && (
           <TextInput
             label="OSRS Name or Discord Name of staff member who referred you"
             placeholder="staff name"
@@ -95,18 +102,47 @@ function ContextField() {
   );
 }
 
-const StaffApplicaton: NextPage = () => {
+const StaffApplicaton: NextPage = (props) => {
   const { data: session } = useSession();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const username = (session?.user?.name as string) || "Guest";
+
+  const utils = api.useContext();
+
+  const {
+    data: pendingStaffApplications,
+    fetchStatus: pendingStaffApplicationsFetchStatus,
+  } = api.staffApplication.findPendingStaffApplicationsByUserId.useQuery(
+    {
+      userId: session?.user?.id as string || ""
+    }
+  )
+
+  const {
+    data: finalStaffApplications,
+    fetchStatus: finalStaffApplicationsFetchStatus,
+  } = api.staffApplication.findFinalizedStaffApplicationsByUserId.useQuery(
+    {
+      userId: session?.user?.id as string || "",
+    }
+  )
+
+  const upsertStaffApplication = api.staffApplication.upsertOneStaffApplication.useMutation(
+    {
+      async onSuccess() {
+        await utils.staffApplication.invalidate()
+      }
+    }
+  )
 
   const form = useForm({
     initialValues: {
-      id: "",
+      id: v4(),
       submittingUserId: "",
+      approvingUserId: "",
       status: "Pending Review",
       osrsName: "",
       discordName: "",
+      staffReference: false,
       staffReferenceName: "",
       desiredRoles: [],
       joinedAventusInput: "",
@@ -118,8 +154,29 @@ const StaffApplicaton: NextPage = () => {
         osrsName.length <= 0 ? "Please enter your OSRS name" : null,
       discordName: (discordName) =>
         discordName.length <= 0 ? "Please enter your Discord name" : null,
+      desiredRoles: (value) => {
+        if (value.length <= 0) {
+          return "Please select at least one role";
+        }
+        return null;
+      }
     },
   });
+
+  useEffect(()=>{
+    if (pendingStaffApplications && pendingStaffApplications.length > 0) {
+      form.setValues(pendingStaffApplications[0] as StaffApplicationForm)
+    }
+  }, [pendingStaffApplications])
+
+  useEffect(()=>{
+    if (!form.values.submittingUserId && session && session.user && session.user.id) {
+      form.setValues({
+        ...form.values,
+        submittingUserId: session.user.id,
+      })
+    }
+  }, [session, form.values])
 
   return (
     <>
@@ -127,17 +184,36 @@ const StaffApplicaton: NextPage = () => {
         <AppShell className="flex">
           <Sidebar />
           <Center maw={isMobile ? 400 : 700} mx="auto">
+            {
+              pendingStaffApplicationsFetchStatus === "fetching" || finalStaffApplicationsFetchStatus === "fetching" ?
+                <LoadingOverlay visible={true} />
+                :
             <FormProvider form={form}>
               <form
                 onSubmit={form.onSubmit(() => {
                   console.log(form.values);
                   //Update DB here
+                  upsertStaffApplication.mutate({
+                    ...form.values,
+                    approvingUserId: "",
+                  })
                 })}
               >
                 <ContextField />
               </form>
             </FormProvider>
+            }
           </Center>
+
+              {process.env.NODE_ENV === "development" &&
+                <>
+              {finalStaffApplicationsFetchStatus === "fetching" ?
+                <div>Loading...</div>
+              :
+                finalStaffApplications && finalStaffApplications.length > 0 &&
+                JSON.stringify(finalStaffApplications, null, `\t`)
+              }</>}
+
         </AppShell>
       </main>
     </>
