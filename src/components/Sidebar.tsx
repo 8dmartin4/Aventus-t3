@@ -17,6 +17,7 @@ import {
   IconHome,
   IconNews,
   IconForms,
+  IconLock,
 } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 
@@ -96,6 +97,11 @@ export const Sidebar = () => {
       icon: IconForms,
       label: "/staffapplication",
       tooltip: "Staff Application Form",
+    },
+    {
+      icon: IconLock,
+      label: "/admin",
+      tooltip: "Admin Panel",
     },
   ];
 

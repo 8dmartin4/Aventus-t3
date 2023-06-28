@@ -5,7 +5,14 @@ import {
   protectedProcedure,
 } from "../trpc";
 
+const PAGE_SIZE = 20;
+
 export const staffApplicationRouter = createTRPCRouter({
+    findAllStaffApplications: protectedProcedure
+        .input(z.object({offset: z.number().optional() }))
+        .query(({ ctx, input }) => {
+            return ctx.prisma.staffApplication.findMany({take: PAGE_SIZE, skip: (input.offset || 0) * PAGE_SIZE})
+        }),
     findStaffApplicationById: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(({ ctx, input }) => {

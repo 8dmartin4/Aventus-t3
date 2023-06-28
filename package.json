@@ -22,7 +22,7 @@
     "@mantine/modals": "^6.0.7",
     "@mantine/notifications": "^6.0.2",
     "@mantine/nprogress": "^6.0.2",
-    "@mantine/prism": "^6.0.9",
+    "@mantine/prism": "^6.0.15",
     "@mantine/spotlight": "^6.0.2",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@portabletext/react": "^3.0.0",
