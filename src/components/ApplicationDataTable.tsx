@@ -1,4 +1,4 @@
-import { Stack, TextInput, Text } from "@mantine/core";
+import { Stack, TextInput, Text, Badge } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { StaffApplication } from "@prisma/client";
 import { IconSearch } from "@tabler/icons-react";
@@ -6,7 +6,7 @@ import { DataTable } from "mantine-datatable";
 import { useEffect, useState } from "react";
 import { StaffApplicationForm } from "types/staffForm";
 
-export const InfoTable = ({
+export const ApplicationDataTable = ({
   applications,
 }: {
   applications: (StaffApplication | StaffApplicationForm)[];
@@ -56,19 +56,29 @@ export const InfoTable = ({
               title: "RSN",
               render: ({ osrsName }) => <Text>{osrsName}</Text>,
             },
-            // {
-            //   accessor: "id",
-            //   title: "id",
-            //   render: (value) => {
-            //     return value.id;
-            //   },
-            // },
+            {
+              accessor: "desiredRoles",
+              title: "Desired Roles",
+              render: ({ desiredRoles }) =>
+                desiredRoles.map((role) => <Badge>{role}</Badge>),
+            },
+            {
+              accessor: "status",
+              title: "Application Status",
+              render: ({ status }) => <Text>{status}</Text>,
+            },
           ]}
           records={records}
+          onRowClick={({ oid }) => {
+            console.log(oid);
+          }}
+          // onCellClick={({status}) => {
+
+          // }}
         />
       </Stack>
     </div>
   );
 };
 
-export default InfoTable;
+export default ApplicationDataTable;

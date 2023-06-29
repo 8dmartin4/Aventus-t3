@@ -1,7 +1,7 @@
 import { Alert, AppShell, LoadingOverlay } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import { Sidebar } from "components/Sidebar";
-import { InfoTable } from "components/InfoTable";
+import { ApplicationDataTable } from "components/ApplicationDataTable";
 import React from "react";
 import { api } from "utils/api";
 import type { NextPage } from "next";
@@ -24,7 +24,7 @@ const AdminPanel: NextPage = (props) => {
             applications && applications.length > 0 ? (
               <>
                 <Prism language="json">{appData}</Prism>
-                <InfoTable applications={applications} />
+                <ApplicationDataTable applications={applications} />
               </>
             ) : (
               <Alert title="No applications">
