@@ -1,4 +1,4 @@
-import { Stack, TextInput, Text, Badge } from "@mantine/core";
+import { Stack, TextInput, Text, Badge, Menu } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { StaffApplication } from "@prisma/client";
 import { IconSearch } from "@tabler/icons-react";
@@ -69,12 +69,36 @@ export const ApplicationDataTable = ({
             },
           ]}
           records={records}
-          onRowClick={({ oid }) => {
-            console.log(oid);
+          rowContextMenu={{
+            trigger: "click",
+            items: (record) => [
+              {
+                key: "view",
+                title: `View application for ${record.osrsName}`,
+                onClick: () => {
+                  // modal with application information
+                },
+              },
+              {
+                key: "approve",
+                color: "green",
+                title: `Approve application for ${record.osrsName}`,
+                onClick: () => {
+                  //update status to approved
+                  //update approving user id
+                },
+              },
+              {
+                key: "decline",
+                color: "red",
+                title: `Decline application for ${record.osrsName}`,
+                onClick: () => {
+                  //update status to declined
+                  //update approving user id
+                },
+              },
+            ],
           }}
-          // onCellClick={({status}) => {
-
-          // }}
         />
       </Stack>
     </div>
