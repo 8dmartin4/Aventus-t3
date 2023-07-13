@@ -1,8 +1,9 @@
-import { Stack, TextInput, Text, Badge, Menu } from "@mantine/core";
+import { Stack, TextInput, Text, Badge, Modal } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { StaffApplication } from "@prisma/client";
 import { IconSearch } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
+import StaffApplicaton from "pages/staffapplication";
 import { useEffect, useState } from "react";
 import { StaffApplicationForm } from "types/staffForm";
 
@@ -15,6 +16,13 @@ export const ApplicationDataTable = ({
   const [query, setQuery] = useState("");
   const [records, setRecords] = useState<typeof applications>();
   const [debouncedQuery] = useDebouncedValue(query, 200);
+  const [openModal, setOpenModal] = useState(false);
+  const [currentModalRecord, setCurrentModalRecord] =
+    useState<typeof applications>();
+
+  const closeAllModals = () => {
+    setOpenModal(false);
+  };
 
   // search
   useEffect(() => {
@@ -76,6 +84,8 @@ export const ApplicationDataTable = ({
                 key: "view",
                 title: `View application for ${record.osrsName}`,
                 onClick: () => {
+                  setOpenModal(true);
+                  setCurrentModalRecord(record);
                   // modal with application information
                 },
               },
@@ -101,6 +111,38 @@ export const ApplicationDataTable = ({
           }}
         />
       </Stack>
+      <Modal
+        opened={openModal}
+        onClose={closeAllModals}
+        title={`${currentModalRecord?.osrsName || ""}'s Application`}
+      >
+        <Stack>
+          <Text>OSRS Name: {currentModalRecord?.osrsName || ""}</Text>
+          <Text>Discord Name: {currentModalRecord?.discordName || ""}</Text>
+          <Text>
+            Staff Reference?{" "}
+            {currentModalRecord?.staffReference
+              ? currentModalRecord?.staffReferenceName
+              : "none"}
+          </Text>{" "}
+          Desired Roles:
+          {currentModalRecord?.desiredRoles.map((role: string) => (
+            <Text>{role}</Text>
+          ))}
+          <Text>
+            When and how did you find/join the Aventus community?{" "}
+            {currentModalRecord?.joinedAventusInput || ""}
+          </Text>
+          <Text>
+            Why do you want to be a part of the Staff team?{" "}
+            {currentModalRecord?.reasonForApplicationInput || ""}
+          </Text>
+          <Text>
+            Why do you think you are a good fit for the subrole(s) you selected?{" "}
+            {currentModalRecord?.reasonForGoodFitInput || ""}
+          </Text>
+        </Stack>
+      </Modal>
     </div>
   );
 };
