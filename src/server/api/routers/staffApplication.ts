@@ -11,7 +11,11 @@ export const staffApplicationRouter = createTRPCRouter({
     findAllStaffApplications: protectedProcedure
         .input(z.object({offset: z.number().optional() }))
         .query(({ ctx, input }) => {
-            return ctx.prisma.staffApplication.findMany({take: PAGE_SIZE, skip: (input.offset || 0) * PAGE_SIZE})
+            return ctx.prisma.staffApplication.findMany({take: PAGE_SIZE, skip: (input.offset || 0) * PAGE_SIZE, 
+                include: {
+                    approvingUser: true,
+                    submittingUser: true,
+                }})
         }),
     findStaffApplicationById: protectedProcedure
         .input(z.object({ id: z.string() }))
@@ -20,6 +24,10 @@ export const staffApplicationRouter = createTRPCRouter({
             where: {
                 id: input.id,
             },
+            include: {
+                approvingUser: true,
+                submittingUser: true,
+            }
         });
         }),
     findPendingStaffApplicationsByUserId: protectedProcedure
@@ -32,6 +40,10 @@ export const staffApplicationRouter = createTRPCRouter({
                 submittingUserId: input.userId,
                 status: "Pending Review",
             },
+            include: {
+                approvingUser: true,
+                submittingUser: true,
+            }
         });
         }),
     findFinalizedStaffApplicationsByUserId: protectedProcedure
@@ -46,6 +58,10 @@ export const staffApplicationRouter = createTRPCRouter({
                   status: "Pending Review"
                 }
             },
+            include: {
+                approvingUser: true,
+                submittingUser: true,
+            }
         });
         }),
     upsertOneStaffApplication: protectedProcedure
@@ -54,6 +70,7 @@ export const staffApplicationRouter = createTRPCRouter({
                 id: z.string(),
                 submittingUserId: z.string(),
                 approvingUserId: z.string().optional(),
+                approvingUserName: z.string().optional(),
                 status: z.string(),
                 osrsName: z.string(),
                 discordName: z.string(),
@@ -75,6 +92,7 @@ export const staffApplicationRouter = createTRPCRouter({
                   id: input.id,
                   status: input.status,
                   ...input.approvingUserId && { approvingUserId: input.approvingUserId },
+                  ...input.approvingUserName && { approvingUserName: input.approvingUserName },
                   osrsName: input.osrsName,
                   discordName: input.discordName,
                   staffReference: input.staffReference,
@@ -88,6 +106,7 @@ export const staffApplicationRouter = createTRPCRouter({
                   submittingUserId: input.submittingUserId,
                   status: input.status,
                   ...input.approvingUserId && { approvingUserId: input.approvingUserId },
+                  ...input.approvingUserName && { approvingUserName: input.approvingUserName },
                   osrsName: input.osrsName,
                   discordName: input.discordName,
                   staffReference: input.staffReference,

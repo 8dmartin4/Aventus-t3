@@ -23,7 +23,7 @@ const AdminPanel: NextPage = (props) => {
           {fetchStatus === "idle" ? (
             applications && applications.length > 0 ? (
               <>
-                <Prism language="json">{appData}</Prism>
+                {/* <Prism language="json">{appData}</Prism> */}
                 <ApplicationDataTable applications={applications} />
               </>
             ) : (

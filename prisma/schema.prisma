@@ -101,4 +101,5 @@ model StaffApplication {
   submittingUserId          String   @db.ObjectId
   approvingUser             User?    @relation(name: "ApprovedStaffApplications", fields: [approvingUserId], references: [id])
   approvingUserId           String?  @db.ObjectId
+  approvingUserName         String?
 }

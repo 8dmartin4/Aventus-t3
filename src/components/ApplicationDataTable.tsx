@@ -6,23 +6,35 @@ import { DataTable } from "mantine-datatable";
 import StaffApplicaton from "pages/staffapplication";
 import { useEffect, useState } from "react";
 import { StaffApplicationForm } from "types/staffForm";
+import { useSession } from "next-auth/react";
+import { api } from "utils/api";
 
 export const ApplicationDataTable = ({
   applications,
 }: {
   applications: (StaffApplication | StaffApplicationForm)[];
 }) => {
+  const { data: session } = useSession();
   const initialRecords = applications;
   const [query, setQuery] = useState("");
   const [records, setRecords] = useState<typeof applications>();
   const [debouncedQuery] = useDebouncedValue(query, 200);
   const [openModal, setOpenModal] = useState(false);
-  const [currentModalRecord, setCurrentModalRecord] =
-    useState<typeof applications>();
+  const [currentModalRecord, setCurrentModalRecord] = useState<
+    StaffApplication | StaffApplicationForm
+  >();
+  const utils = api.useContext();
 
   const closeAllModals = () => {
     setOpenModal(false);
   };
+
+  const upsertStaffApplication =
+    api.staffApplication.upsertOneStaffApplication.useMutation({
+      async onSuccess() {
+        await utils.staffApplication.invalidate();
+      },
+    });
 
   // search
   useEffect(() => {
@@ -94,6 +106,16 @@ export const ApplicationDataTable = ({
                 color: "green",
                 title: `Approve application for ${record.osrsName}`,
                 onClick: () => {
+                  session &&
+                  session.user?.role &&
+                  session.user.role.includes("ADMIN")
+                    ? upsertStaffApplication.mutate({
+                        ...record,
+                        status: "Approved",
+                        approvingUserId: session.user.id,
+                        approvingUserName: session.user.name || "",
+                      })
+                    : {};
                   //update status to approved
                   //update approving user id
                 },
