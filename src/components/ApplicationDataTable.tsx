@@ -1,9 +1,8 @@
-import { Stack, TextInput, Text, Badge, Modal } from "@mantine/core";
+import { Stack, TextInput, Text, Badge, Modal, Paper } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { StaffApplication } from "@prisma/client";
 import { IconSearch } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import StaffApplicaton from "pages/staffapplication";
 import { useEffect, useState } from "react";
 import { StaffApplicationForm } from "types/staffForm";
 import { useSession } from "next-auth/react";
@@ -125,6 +124,16 @@ export const ApplicationDataTable = ({
                 color: "red",
                 title: `Decline application for ${record.osrsName}`,
                 onClick: () => {
+                  session &&
+                  session.user?.role &&
+                  session.user.role.includes("ADMIN")
+                    ? upsertStaffApplication.mutate({
+                        ...record,
+                        status: "Rejected",
+                        approvingUserId: session.user.id,
+                        approvingUserName: session.user.name || "",
+                      })
+                    : {};
                   //update status to declined
                   //update approving user id
                 },
@@ -139,30 +148,30 @@ export const ApplicationDataTable = ({
         title={`${currentModalRecord?.osrsName || ""}'s Application`}
       >
         <Stack>
-          <Text>OSRS Name: {currentModalRecord?.osrsName || ""}</Text>
-          <Text>Discord Name: {currentModalRecord?.discordName || ""}</Text>
-          <Text>
-            Staff Reference?{" "}
+          OSRS Name:
+          <Paper p="xs">{currentModalRecord?.osrsName || ""}</Paper>
+          Discord Name
+          <Paper p="xs">{currentModalRecord?.discordName || ""}</Paper>
+          Staff Reference?{" "}
+          <Paper p="xs">
             {currentModalRecord?.staffReference
               ? currentModalRecord?.staffReferenceName
               : "none"}
-          </Text>{" "}
+          </Paper>
           Desired Roles:
           {currentModalRecord?.desiredRoles.map((role: string) => (
-            <Text>{role}</Text>
+            <Paper p="xs">{role}</Paper>
           ))}
-          <Text>
-            When and how did you find/join the Aventus community?{" "}
-            {currentModalRecord?.joinedAventusInput || ""}
-          </Text>
-          <Text>
-            Why do you want to be a part of the Staff team?{" "}
+          When and how did you find/join the Aventus community?
+          <Paper p="xs">{currentModalRecord?.joinedAventusInput || ""}</Paper>
+          Why do you want to be a part of the Staff team?
+          <Paper p="xs">
             {currentModalRecord?.reasonForApplicationInput || ""}
-          </Text>
-          <Text>
-            Why do you think you are a good fit for the subrole(s) you selected?{" "}
+          </Paper>
+          Why do you think you are a good fit for the subrole(s) you selected?
+          <Paper p="xs">
             {currentModalRecord?.reasonForGoodFitInput || ""}
-          </Text>
+          </Paper>
         </Stack>
       </Modal>
     </div>

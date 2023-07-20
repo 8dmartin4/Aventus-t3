@@ -1,4 +1,4 @@
-import { Alert, AppShell, LoadingOverlay } from "@mantine/core";
+import { Alert, AppShell, LoadingOverlay, Text } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import { Sidebar } from "components/Sidebar";
 import { ApplicationDataTable } from "components/ApplicationDataTable";
@@ -6,6 +6,7 @@ import React from "react";
 import { api } from "utils/api";
 import type { NextPage } from "next";
 import { useMediaQuery } from "@mantine/hooks";
+import { useSession } from "next-auth/react";
 
 const AdminPanel: NextPage = (props) => {
   const { data: applications, fetchStatus } =
@@ -15,24 +16,34 @@ const AdminPanel: NextPage = (props) => {
   const appData = JSON.stringify(applications, null, "\t");
   console.log(applications);
 
+  const { data: session } = useSession();
+
   return (
     <>
       <main>
         <AppShell>
           <Sidebar />
-          {fetchStatus === "idle" ? (
-            applications && applications.length > 0 ? (
-              <>
-                {/* <Prism language="json">{appData}</Prism> */}
-                <ApplicationDataTable applications={applications} />
-              </>
+          {session &&
+          session.user?.role &&
+          session.user.role.includes("ADMIN") ? (
+            fetchStatus === "idle" ? (
+              applications && applications.length > 0 ? (
+                <>
+                  {/* <Prism language="json">{appData}</Prism> */}
+                  <ApplicationDataTable applications={applications} />
+                </>
+              ) : (
+                <Alert title="No applications">
+                  There are no applications to display.
+                </Alert>
+              )
             ) : (
-              <Alert title="No applications">
-                There are no applications to display.
-              </Alert>
+              <LoadingOverlay visible />
             )
           ) : (
-            <LoadingOverlay visible />
+            <Text>
+              You do not have the proper permissions to access this page.
+            </Text>
           )}
         </AppShell>
       </main>
