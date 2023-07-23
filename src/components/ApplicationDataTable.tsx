@@ -1,4 +1,13 @@
-import { Stack, TextInput, Text, Badge, Modal, Paper } from "@mantine/core";
+import {
+  Stack,
+  TextInput,
+  Text,
+  Badge,
+  Modal,
+  Title,
+  Button,
+  Divider,
+} from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { StaffApplication } from "@prisma/client";
 import { IconSearch } from "@tabler/icons-react";
@@ -89,17 +98,17 @@ export const ApplicationDataTable = ({
           ]}
           records={records}
           rowContextMenu={{
-            trigger: "click",
+            trigger: "rightClick",
             items: (record) => [
-              {
-                key: "view",
-                title: `View application for ${record.osrsName}`,
-                onClick: () => {
-                  setOpenModal(true);
-                  setCurrentModalRecord(record);
-                  // modal with application information
-                },
-              },
+              // {
+              //   key: "view",
+              //   title: `View application for ${record.osrsName}`,
+              //   onClick: () => {
+              //     setOpenModal(true);
+              //     setCurrentModalRecord(record);
+              //     // modal with application information
+              //   },
+              // },
               {
                 key: "approve",
                 color: "green",
@@ -140,6 +149,10 @@ export const ApplicationDataTable = ({
               },
             ],
           }}
+          onRowClick={(record) => {
+            setOpenModal(true);
+            setCurrentModalRecord(record);
+          }}
         />
       </Stack>
       <Modal
@@ -148,31 +161,77 @@ export const ApplicationDataTable = ({
         title={`${currentModalRecord?.osrsName || ""}'s Application`}
       >
         <Stack>
-          OSRS Name:
-          <Paper p="xs">{currentModalRecord?.osrsName || ""}</Paper>
-          Discord Name
-          <Paper p="xs">{currentModalRecord?.discordName || ""}</Paper>
-          Staff Reference?{" "}
-          <Paper p="xs">
+          <Title order={4}>OSRS Name:</Title>
+          <p>{currentModalRecord?.osrsName || ""}</p>
+          <Divider variant="dashed" />
+          <Title order={4}>Discord Name:</Title>
+          <p>{currentModalRecord?.discordName || ""}</p>
+          <Divider variant="dashed" />
+          <Title order={4}>Staff Reference?</Title>
+          <p>
             {currentModalRecord?.staffReference
               ? currentModalRecord?.staffReferenceName
               : "none"}
-          </Paper>
-          Desired Roles:
+          </p>
+          <Divider variant="dashed" />
+          <Title order={4}>Desired Roles:</Title>
           {currentModalRecord?.desiredRoles.map((role: string) => (
-            <Paper p="xs">{role}</Paper>
+            <p>{role}</p>
           ))}
-          When and how did you find/join the Aventus community?
-          <Paper p="xs">{currentModalRecord?.joinedAventusInput || ""}</Paper>
-          Why do you want to be a part of the Staff team?
-          <Paper p="xs">
-            {currentModalRecord?.reasonForApplicationInput || ""}
-          </Paper>
-          Why do you think you are a good fit for the subrole(s) you selected?
-          <Paper p="xs">
-            {currentModalRecord?.reasonForGoodFitInput || ""}
-          </Paper>
+          <Divider variant="dashed" />
+          <Title order={4}>
+            When and how did you find/join the Aventus community?
+          </Title>
+          <p>{currentModalRecord?.joinedAventusInput || ""}</p>
+          <Divider variant="dashed" />
+          <Title order={4}>
+            Why do you want to be a part of the Staff team?
+          </Title>
+          <p>{currentModalRecord?.reasonForApplicationInput || ""}</p>
+          <Divider variant="dashed" />
+          <Title order={4}>
+            Why do you think you are a good fit for the subrole(s) you selected?
+          </Title>
+          <p>{currentModalRecord?.reasonForGoodFitInput || ""}</p>
         </Stack>
+        <Button
+          variant="outline"
+          color="teal"
+          size="xs"
+          m="xs"
+          mt="20px"
+          onClick={() => {
+            session && session.user?.role && session.user.role.includes("ADMIN")
+              ? upsertStaffApplication.mutate({
+                  ...currentModalRecord,
+                  status: "Approved",
+                  approvingUserId: session.user.id,
+                  approvingUserName: session.user.name || "",
+                })
+              : {};
+          }}
+        >
+          Approve
+        </Button>
+        <Button
+          variant="outline"
+          color="red"
+          size="xs"
+          m="xs"
+          mt="20px"
+          onClick={() => {
+            session && session.user?.role && session.user.role.includes("ADMIN")
+              ? upsertStaffApplication.mutate({
+                  ...currentModalRecord,
+                  status: "Rejected",
+                  approvingUserId: session.user.id,
+                  approvingUserName: session.user.name || "",
+                })
+              : {};
+          }}
+        >
+          Reject
+        </Button>
       </Modal>
     </div>
   );
