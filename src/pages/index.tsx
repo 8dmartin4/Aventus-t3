@@ -116,7 +116,7 @@ const Home: NextPage = () => {
                       ? "Your Total KC Gained is: "
                       : "Your Total XP Gained is: "}
                     {playerCompetitionDetails &&
-                      playerCompetitionDetails[0]?.progress?.gained}
+                      playerCompetitionDetails[0]?.progress?.gained || 0}
                   </Title>
                   <Title order={2}>{versusLeader()}</Title>
                 </Stack>
