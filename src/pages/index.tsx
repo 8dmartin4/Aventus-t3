@@ -122,12 +122,21 @@ const Home: NextPage = () => {
               ) : (
                 <Stack>
                   <Title order={2}>
+<<<<<<< HEAD
                     {`Your Total ${metricGained(
                       currentCompetitionDetails?.metric || ""
                     )} Gained is: `}
                     {(playerCompetitionDetails &&
                       playerCompetitionDetails[0]?.progress?.gained) ||
                       0}
+=======
+                    {currentCompetitionDetails?.title &&
+                    currentCompetitionDetails?.title.includes("BOTW")
+                      ? "Your Total KC Gained is: "
+                      : "Your Total XP Gained is: "}
+                    {playerCompetitionDetails &&
+                      playerCompetitionDetails[0]?.progress?.gained || 0}
+>>>>>>> refs/remotes/origin/main
                   </Title>
                   <Title order={2}>{versusLeader()}</Title>
                 </Stack>
