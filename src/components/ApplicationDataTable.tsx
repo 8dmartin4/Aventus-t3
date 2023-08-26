@@ -30,7 +30,22 @@ export const ApplicationDataTable = ({
   const [openModal, setOpenModal] = useState(false);
   const [currentModalRecord, setCurrentModalRecord] = useState<
     StaffApplication | StaffApplicationForm
-  >();
+  >({
+    id: "",
+    oid: "",
+    osrsName: "",
+    discordName: "",
+    desiredRoles: [],
+    staffReference: false,
+    staffReferenceName: "",
+    status: "Pending",
+    approvingUserId: "",
+    approvingUserName: "",
+    joinedAventusInput: "",
+    reasonForApplicationInput: "",
+    reasonForGoodFitInput: "",
+    submittingUserId: "",
+  });
   const utils = api.useContext();
 
   const closeAllModals = () => {

@@ -67,14 +67,25 @@ const Home: NextPage = () => {
 
   //compare player versus the 1st place competitor using a custom react hook
   const versusLeader = useVersusLeader(
-    currentCompetitionDetails?.title || "",
     (playerCompetitionDetails &&
       playerCompetitionDetails[0]?.progress?.gained) ||
       0,
     currentCompetitionDetails ?? {
       participations: [{ progress: { gained: null } }],
-    }
+    },
+    (currentCompetitionDetails && currentCompetitionDetails?.metric) || ""
   );
+
+  //check if currentCompetionDetails.metric is a skill, boss, ehp, or ehb
+  const metricGained = (metric: string) => {
+    if (metric === "ehp") {
+      return "EHP";
+    } else if (metric === "ehb") {
+      return "EHB";
+    } else {
+      return metric === typeof "SKILL" ? "XP" : "KC";
+    }
+  };
 
   return (
     <>
@@ -111,12 +122,12 @@ const Home: NextPage = () => {
               ) : (
                 <Stack>
                   <Title order={2}>
-                    {currentCompetitionDetails?.title &&
-                    currentCompetitionDetails?.title.includes("BOTW")
-                      ? "Your Total KC Gained is: "
-                      : "Your Total XP Gained is: "}
-                    {playerCompetitionDetails &&
-                      playerCompetitionDetails[0]?.progress?.gained}
+                    {`Your Total ${metricGained(
+                      currentCompetitionDetails?.metric || ""
+                    )} Gained is: `}
+                    {(playerCompetitionDetails &&
+                      playerCompetitionDetails[0]?.progress?.gained) ||
+                      0}
                   </Title>
                   <Title order={2}>{versusLeader()}</Title>
                 </Stack>
