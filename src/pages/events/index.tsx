@@ -15,7 +15,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import React, { useState } from "react";
-import { Sidebar } from "components/Sidebar";
+import { Sidebar } from "components/layouts/Sidebar";
 import { api } from "utils/api";
 import { useForm } from "@mantine/form";
 import { Metric } from "@wise-old-man/utils";

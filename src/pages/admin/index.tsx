@@ -1,7 +1,7 @@
 import { Alert, AppShell, LoadingOverlay, Text } from "@mantine/core";
 import { Prism } from "@mantine/prism";
-import { Sidebar } from "components/Sidebar";
-import { ApplicationDataTable } from "components/ApplicationDataTable";
+import { Sidebar } from "components/layouts/Sidebar";
+import { ApplicationDataTable } from "components/admin/ApplicationDataTable";
 import React from "react";
 import { api } from "utils/api";
 import type { NextPage } from "next";

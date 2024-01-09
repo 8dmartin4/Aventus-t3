@@ -1,6 +1,6 @@
 import { AppShell, SimpleGrid } from "@mantine/core";
-import { Sidebar } from "components/Sidebar";
-import { BlogCard } from "components/BlogCard";
+import { Sidebar } from "components/layouts/Sidebar";
+import { BlogCard } from "components/content/BlogCard";
 import React from "react";
 import { api } from "utils/api";
 import type { Post } from "types/sanity";

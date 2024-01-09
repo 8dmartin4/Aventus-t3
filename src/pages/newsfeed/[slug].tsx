@@ -19,9 +19,9 @@ import { IconArrowBack, IconQuote } from "@tabler/icons-react";
 import Link from "next/link";
 import sanity from "utils/sanity";
 import Image from "next/image";
-import { Sidebar } from "components/Sidebar";
+import { Sidebar } from "components/layouts/Sidebar";
 import type { NextPage } from "next";
-import { BlogCard } from "components/BlogCard";
+import { BlogCard } from "components/content/BlogCard";
 
 const myPortableTextComponents = {
   block: {

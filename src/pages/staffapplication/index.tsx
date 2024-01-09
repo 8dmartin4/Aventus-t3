@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { NextPage } from "next";
-import { Sidebar } from "components/Sidebar";
+import { Sidebar } from "components/layouts/Sidebar";
 import { useSession } from "next-auth/react";
 import { useMediaQuery } from "@mantine/hooks";
 import {

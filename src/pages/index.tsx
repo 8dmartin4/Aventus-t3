@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import { api } from "utils/api";
-import { Sidebar } from "components/Sidebar";
+import { Sidebar } from "components/layouts/Sidebar";
 import {
   Button,
   LoadingOverlay,
@@ -14,7 +14,7 @@ import {
   Image,
 } from "@mantine/core";
 import Head from "next/head";
-import { TopFiveChart } from "components/TopFiveChart";
+import { TopFiveChart } from "components/data/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
 import { useMediaQuery } from "@mantine/hooks";
 
