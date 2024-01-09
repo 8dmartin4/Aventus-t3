@@ -20,7 +20,7 @@ import useVersusLeader from "utils/useVersusLeader";
 import { useMediaQuery } from "@mantine/hooks";
 import StackOrSimpleGrid from "components/layouts/SimpleGridOrStack";
 import { DataTable } from "mantine-datatable";
-import { Prism } from "@mantine/prism";
+import { orderBy } from "lodash";
 
 const Home: NextPage = (props) => {
   const { data: session } = useSession();
@@ -111,9 +111,7 @@ const Home: NextPage = (props) => {
             <StackOrSimpleGrid cols={2} spacing="lg" verticalSpacing="sm">
               <Card radius="lg">
                 {/* current event table */}
-                {currentCompetitionDetailsFetchStatus === "loading" ? (
-                  <LoadingOverlay visible />
-                ) : (
+                {
                   <>
                     <Title order={2}>Current Event Leaderboard:</Title>
                     <Title order={4}>{currentCompetitionDetails?.title}</Title>
@@ -127,7 +125,7 @@ const Home: NextPage = (props) => {
                       <TopFiveChart {...currentCompetitionDetails} />
                     )}
                   </>
-                )}
+                }
                 {/* last event table */}
                 {currentCompetitionDetailsFetchStatus === "loading" ? (
                   <LoadingOverlay visible />
@@ -155,24 +153,29 @@ const Home: NextPage = (props) => {
                   {lastCompetitionDetails?.startsAt.toLocaleDateString()} to{" "}
                   {lastCompetitionDetails?.endsAt.toLocaleDateString()}
                 </Title>
-                {lastCompetitionDetails && (
+                {lastCompetitionDetailsFetchStatus === "loading" ? (
+                  <LoadingOverlay visible />
+                ) : (
                   <>
-                    <DataTable
-                      columns={[
-                        {
-                          accessor: "player.username",
-                          sortable: true,
-                        },
-                        {
-                          accessor: "progress.gained",
-                          sortable: true,
-                        },
-                      ]}
-                      records={lastCompetitionDetails.participations.splice(
-                        0,
-                        9
-                      )}
-                    />
+                    {lastCompetitionDetails && (
+                      <DataTable
+                        columns={[
+                          {
+                            accessor: "player.username",
+                            sortable: true,
+                          },
+                          {
+                            accessor: "progress.gained",
+                            sortable: true,
+                          },
+                        ]}
+                        records={orderBy(
+                          lastCompetitionDetails.participations,
+                          ["progress.gained"],
+                          ["desc"]
+                        ).splice(0, 9)}
+                      />
+                    )}
                   </>
                 )}
               </Card>
