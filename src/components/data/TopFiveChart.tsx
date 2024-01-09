@@ -55,7 +55,7 @@ export const TopFiveChart = (
   };
   return (
     <>
-      <Bar ref={ref} data={data} />
+      <Bar ref={ref} data={data} dir={"ltr"} />
     </>
   );
 };

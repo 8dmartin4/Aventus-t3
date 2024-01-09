@@ -12,11 +12,15 @@ import {
   Center,
   Card,
   Image,
+  Skeleton,
 } from "@mantine/core";
 import Head from "next/head";
 import { TopFiveChart } from "components/data/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
 import { useMediaQuery } from "@mantine/hooks";
+import StackOrSimpleGrid from "components/layouts/SimpleGridOrStack";
+import { DataTable } from "mantine-datatable";
+import { Prism } from "@mantine/prism";
 
 const Home: NextPage = (props) => {
   const { data: session } = useSession();
@@ -64,6 +68,12 @@ const Home: NextPage = (props) => {
   } = api.wom.findCompetitionDetails.useQuery({
     id: currentEvent?.id ? currentEvent?.id : 0,
   });
+  const {
+    data: lastCompetitionDetails,
+    status: lastCompetitionDetailsFetchStatus,
+  } = api.wom.findCompetitionDetails.useQuery({
+    id: lastEvent?.id ? lastEvent?.id : 0,
+  });
 
   //compare player versus the 1st place competitor using a custom react hook
   const versusLeader = useVersusLeader(
@@ -98,41 +108,75 @@ const Home: NextPage = (props) => {
         <AppShell className="flex">
           <Sidebar />
           {session ? (
-            <SimpleGrid cols={1} spacing="sm" verticalSpacing="sm">
-              {/* current event table */}
-              {currentCompetitionDetailsFetchStatus === "loading" ? (
-                <LoadingOverlay visible />
-              ) : (
-                <Stack>
-                  <Title order={2}>Current Event Leaderboard:</Title>
-                  <Title order={4}>{currentCompetitionDetails?.title}</Title>
-                  <Title order={6}>
-                    Duration:{" "}
-                    {currentCompetitionDetails?.startsAt.toLocaleDateString()}{" "}
-                    to {currentCompetitionDetails?.endsAt.toLocaleDateString()}
-                  </Title>
-                  {currentCompetitionDetails && (
-                    <TopFiveChart {...currentCompetitionDetails} />
-                  )}
-                </Stack>
-              )}
-              {/* last event table */}
-              {currentCompetitionDetailsFetchStatus === "loading" ? (
-                <LoadingOverlay visible />
-              ) : (
-                <Stack>
-                  <Title order={2}>
-                    {`Your Total ${metricGained(
-                      currentCompetitionDetails?.metric || ""
-                    )} Gained is: `}
-                    {(playerCompetitionDetails &&
-                      playerCompetitionDetails[0]?.progress?.gained) ||
-                      0}
-                  </Title>
-                  <Title order={2}>{versusLeader()}</Title>
-                </Stack>
-              )}
-            </SimpleGrid>
+            <StackOrSimpleGrid cols={2} spacing="lg" verticalSpacing="sm">
+              <Card>
+                {/* current event table */}
+                {currentCompetitionDetailsFetchStatus === "loading" ? (
+                  <LoadingOverlay visible />
+                ) : (
+                  <>
+                    <Title order={2}>Current Event Leaderboard:</Title>
+                    <Title order={4}>{currentCompetitionDetails?.title}</Title>
+                    <Title order={6}>
+                      Duration:{" "}
+                      {currentCompetitionDetails?.startsAt.toLocaleDateString()}{" "}
+                      to{" "}
+                      {currentCompetitionDetails?.endsAt.toLocaleDateString()}
+                    </Title>
+                    {currentCompetitionDetails && (
+                      <TopFiveChart {...currentCompetitionDetails} />
+                    )}
+                  </>
+                )}
+                {/* last event table */}
+                {currentCompetitionDetailsFetchStatus === "loading" ? (
+                  <LoadingOverlay visible />
+                ) : (
+                  <>
+                    <Title order={2}>
+                      {`Your Total ${metricGained(
+                        currentCompetitionDetails?.metric || ""
+                      )} Gained is: `}
+                      {(playerCompetitionDetails &&
+                        playerCompetitionDetails[0]?.progress?.gained) ||
+                        0}
+                    </Title>
+                    <Title order={2}>{versusLeader()}</Title>
+                  </>
+                )}
+              </Card>
+              <Card>
+                <Title order={2}>Last Event Details:</Title>
+                <Title order={4}>
+                  {lastCompetitionDetails?.title} - Top 10 Players
+                </Title>
+                <Title order={6}>
+                  Duration:{" "}
+                  {lastCompetitionDetails?.startsAt.toLocaleDateString()} to{" "}
+                  {lastCompetitionDetails?.endsAt.toLocaleDateString()}
+                </Title>
+                {lastCompetitionDetails && (
+                  <>
+                    <DataTable
+                      columns={[
+                        {
+                          accessor: "player.username",
+                          sortable: true,
+                        },
+                        {
+                          accessor: "progress.gained",
+                          sortable: true,
+                        },
+                      ]}
+                      records={lastCompetitionDetails.participations.splice(
+                        0,
+                        9
+                      )}
+                    />
+                  </>
+                )}
+              </Card>
+            </StackOrSimpleGrid>
           ) : (
             // if not signed in display sign in page
             <div>
