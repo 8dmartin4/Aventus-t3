@@ -1,7 +1,7 @@
 import { Metric } from '@wise-old-man/utils';
 import { useCallback } from 'react';
 
-const useVersusLeader = (playerProgress: number, currentComp: { participations: { progress: { gained: number | null } }[]}, metric: string) => {
+const useVersusLeader = (playerProgress: number, currentComp: { participations: { progress: { gained: number | null } }[] }, metric: string) => {
   const compGained = currentComp?.participations.map(
     (player) => player.progress.gained
   );
@@ -24,10 +24,8 @@ const useVersusLeader = (playerProgress: number, currentComp: { participations: 
       )} ${trackingMetric} behind first place.`;
     }
 
-    if (playerProgress > firstPlace) {
-      return `You are ${(playerProgress - firstPlace).toLocaleString(
-        "en-US"
-      )} ${trackingMetric} ahead of first place.`;
+    if (playerProgress >= firstPlace) {
+      return `You are in first place!`;
     }
 
     return `Error parsing leaderboard data. Player gained: ${playerProgress || ''}, First place: ${compGained[0] || ''}`;

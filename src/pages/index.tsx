@@ -18,7 +18,7 @@ import { TopFiveChart } from "components/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
 import { useMediaQuery } from "@mantine/hooks";
 
-const Home: NextPage = () => {
+const Home: NextPage = (props) => {
   const { data: session } = useSession();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const username = (session?.user?.name as string) || "Guest";
