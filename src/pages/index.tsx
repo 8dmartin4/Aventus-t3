@@ -109,7 +109,7 @@ const Home: NextPage = (props) => {
           <Sidebar />
           {session ? (
             <StackOrSimpleGrid cols={2} spacing="lg" verticalSpacing="sm">
-              <Card>
+              <Card radius="lg">
                 {/* current event table */}
                 {currentCompetitionDetailsFetchStatus === "loading" ? (
                   <LoadingOverlay visible />
@@ -145,7 +145,7 @@ const Home: NextPage = (props) => {
                   </>
                 )}
               </Card>
-              <Card>
+              <Card radius="lg">
                 <Title order={2}>Last Event Details:</Title>
                 <Title order={4}>
                   {lastCompetitionDetails?.title} - Top 10 Players
