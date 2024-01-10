@@ -22,6 +22,7 @@ import { Metric } from "@wise-old-man/utils";
 import router from "next/router";
 import { useSession } from "next-auth/react";
 import { NextPage } from "next";
+import { DateTimePicker, TimeInput } from "@mantine/dates";
 
 const Events: NextPage = (props) => {
   const { data: session } = useSession();
@@ -133,6 +134,7 @@ const Events: NextPage = (props) => {
                   opened={openForm}
                   onClose={closeAllModals}
                   title="Create New Event"
+                  withinPortal
                 >
                   <form
                     onSubmit={form.onSubmit(() => {
@@ -150,13 +152,25 @@ const Events: NextPage = (props) => {
                       withAsterisk
                       {...form.getInputProps("title")}
                     />
-                    <Group mt="sm">
-                      <Text>
-                        Event Duration:{" "}
-                        {form.values.startsAt.toLocaleDateString()} to{" "}
-                        {form.values.endsAt.toLocaleDateString()}
-                      </Text>
-                    </Group>
+                    {/* <Text>
+                      Event Duration:{" "}
+                      {form.values.startsAt.toLocaleDateString()} to{" "}
+                      {form.values.endsAt.toLocaleDateString()}
+                    </Text> */}
+                    <DateTimePicker
+                      label="Start Time"
+                      placeholder="Start Time"
+                      withAsterisk
+                      {...form.getInputProps("startsAt")}
+                      dropdownType="modal"
+                    />
+                    <DateTimePicker
+                      label="End Time"
+                      placeholder="End Time"
+                      withAsterisk
+                      {...form.getInputProps("endsAt")}
+                      dropdownType="modal"
+                    />
                     <Radio.Group
                       name="eventType"
                       label="Select Event Type"
