@@ -162,11 +162,9 @@ const Home: NextPage = (props) => {
                         columns={[
                           {
                             accessor: "player.username",
-                            sortable: true,
                           },
                           {
                             accessor: "progress.gained",
-                            sortable: true,
                           },
                         ]}
                         records={orderBy(
