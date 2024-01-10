@@ -77,35 +77,40 @@ const Events: NextPage = (props) => {
       <main>
         <AppShell className="flex">
           <Sidebar />
-          {groupCompetitionFetchStatus === "loading" ? (
-            <LoadingOverlay visible />
-          ) : (
-            <div>
-              <FullCalendar
-                plugins={[interactionPlugin, dayGridPlugin]}
-                initialView="dayGridMonth"
-                selectable={true}
-                events={calendarEvents}
-                select={
-                  session &&
-                  session.user?.role &&
-                  session.user.role.includes("ADMIN")
-                    ? (info) => {
-                        setOpenForm(true);
-                        form.setFieldValue("startsAt", info.start);
-                        form.setFieldValue("endsAt", info.end);
-                      }
-                    : () => {}
-                }
-                eventContent={(e) => {
-                  return (
-                    <Menu>
-                      <Menu.Target>
-                        <div>
-                          <Text>{e.event.title}</Text>
-                        </div>
-                      </Menu.Target>
-                      {session ? (
+          {session && session?.user?.role?.includes("ADMIN") ? (
+            groupCompetitionFetchStatus === "loading" ? (
+              <LoadingOverlay visible />
+            ) : (
+              <div>
+                <FullCalendar
+                  aspectRatio={2.5}
+                  plugins={[interactionPlugin, dayGridPlugin]}
+                  initialView="dayGridMonth"
+                  selectable={true}
+                  events={calendarEvents}
+                  select={(info) => {
+                    setOpenForm(true);
+                    form.setFieldValue(
+                      "startsAt",
+                      new Date(
+                        new Date(info.start.setUTCHours(0)).setDate(
+                          new Date(info.start.setUTCHours(0)).getDate() + 1
+                        )
+                      )
+                    );
+                    form.setFieldValue(
+                      "endsAt",
+                      new Date(info.end.setUTCHours(0))
+                    );
+                  }}
+                  eventContent={(e) => {
+                    return (
+                      <Menu>
+                        <Menu.Target>
+                          <div>
+                            <Text>{e.event.title}</Text>
+                          </div>
+                        </Menu.Target>
                         <Menu.Dropdown>
                           <Menu.Item
                             color="red"
@@ -120,175 +125,177 @@ const Events: NextPage = (props) => {
                             Delete Event
                           </Menu.Item>
                         </Menu.Dropdown>
-                      ) : (
-                        <></>
-                      )}
-                    </Menu>
-                  );
-                }}
-              />
-              <Modal
-                opened={openForm}
-                onClose={closeAllModals}
-                title="Create New Event"
-              >
-                <form
-                  onSubmit={form.onSubmit(() => {
-                    void createNewCompetition
-                      .mutateAsync(form.values)
-                      .then(() => {
-                        router.reload();
-                      });
-                    close();
-                  })}
+                      </Menu>
+                    );
+                  }}
+                />
+                <Modal
+                  opened={openForm}
+                  onClose={closeAllModals}
+                  title="Create New Event"
                 >
-                  <TextInput
-                    label="Event Title"
-                    placeholder="Event Title"
-                    withAsterisk
-                    {...form.getInputProps("title")}
-                  />
-                  <Group mt="sm">
-                    <Text>
-                      Event Duration:{" "}
-                      {form.values.startsAt.toLocaleDateString()} to{" "}
-                      {form.values.endsAt.toLocaleDateString()}
-                    </Text>
-                  </Group>
-                  <Radio.Group
-                    name="eventType"
-                    label="Select Event Type"
-                    mt="xs"
-                    value={radioValue}
-                    onChange={setRadioValue}
-                    withAsterisk
-                  >
-                    <Group>
-                      <Radio value="SOTW" label="SOTW" />
-                      <Radio value="BOTW" label="BOTW" />
-                    </Group>
-                  </Radio.Group>
-                  <NativeSelect
-                    mt="md"
-                    data={
-                      radioValue == "SOTW"
-                        ? [
-                            "attack",
-                            "defence",
-                            "strength",
-                            "hitpoints",
-                            "ranged",
-                            "prayer",
-                            "magic",
-                            "cooking",
-                            "woodcutting",
-                            "fletching",
-                            "fishing",
-                            "firemaking",
-                            "crafting",
-                            "smithing",
-                            "mining",
-                            "herblore",
-                            "agility",
-                            "thieving",
-                            "slayer",
-                            "farming",
-                            "runecrafting",
-                            "hunter",
-                            "construction",
-                          ]
-                        : [
-                            "abyssal_sire",
-                            "alchemical_hydra",
-                            "barrows_chests",
-                            "bryophyta",
-                            "callisto",
-                            "cerberus",
-                            "chambers_of_xeric",
-                            "chambers_of_xeric_challenge_mode",
-                            "chaos_elemental",
-                            "chaos_fanatic",
-                            "commander_zilyana",
-                            "corporeal_beast",
-                            "crazy_archaeologist",
-                            "dagannoth_prime",
-                            "dagannoth_rex",
-                            "dagannoth_supreme",
-                            "deranged_archaeologist",
-                            "general_graardor",
-                            "giant_mole",
-                            "grotesque_guardians",
-                            "hespori",
-                            "kalphite_queen",
-                            "king_black_dragon",
-                            "kraken",
-                            "kreearra",
-                            "kril_tsutsaroth",
-                            "mimic",
-                            "nex",
-                            "nightmare",
-                            "phosanis_nightmare",
-                            "obor",
-                            "phantom_muspah",
-                            "sarachnis",
-                            "scorpia",
-                            "skotizo",
-                            "tempoross",
-                            "the_gauntlet",
-                            "the_corrupted_gauntlet",
-                            "theatre_of_blood",
-                            "theatre_of_blood_hard_mode",
-                            "thermonuclear_smoke_devil",
-                            "tombs_of_amascut",
-                            "tombs_of_amascut_expert",
-                            "tzkal_zuk",
-                            "tztok_jad",
-                            "venenatis",
-                            "vetion",
-                            "vorkath",
-                            "wintertodt",
-                            "zalcano",
-                            "zulrah",
-                          ]
-                    }
-                    {...form.getInputProps("metric")}
-                  />
-                  <Button type="submit" mt="md">
-                    Submit
-                  </Button>
-                </form>
-              </Modal>
-              <Modal
-                opened={openConfirmation}
-                onClose={closeAllModals}
-                title="Delete Event"
-              >
-                <Alert title="Confirm Deletion" color="red">
-                  Are you sure you want to delete {`"${titleValue}"`}? This
-                  action can not be undone.
-                </Alert>
-                <Group sx={{ display: "flex", justifyContent: "right" }}>
-                  <Button
-                    color="red"
-                    variant="outline"
-                    mt="sm"
-                    onClick={() => {
-                      void deleteSelectedCompetition
-                        .mutateAsync({
-                          id: eventIdValue,
-                          groupVerificationCode:
-                            form.values.groupVerificationCode,
-                        })
+                  <form
+                    onSubmit={form.onSubmit(() => {
+                      void createNewCompetition
+                        .mutateAsync(form.values)
                         .then(() => {
                           router.reload();
                         });
-                    }}
+                      close();
+                    })}
                   >
-                    Confirm Deletion
-                  </Button>
-                </Group>
-              </Modal>
-            </div>
+                    <TextInput
+                      label="Event Title"
+                      placeholder="Event Title"
+                      withAsterisk
+                      {...form.getInputProps("title")}
+                    />
+                    <Group mt="sm">
+                      <Text>
+                        Event Duration:{" "}
+                        {form.values.startsAt.toLocaleDateString()} to{" "}
+                        {form.values.endsAt.toLocaleDateString()}
+                      </Text>
+                    </Group>
+                    <Radio.Group
+                      name="eventType"
+                      label="Select Event Type"
+                      mt="xs"
+                      value={radioValue}
+                      onChange={setRadioValue}
+                      withAsterisk
+                    >
+                      <Group>
+                        <Radio value="SOTW" label="SOTW" />
+                        <Radio value="BOTW" label="BOTW" />
+                      </Group>
+                    </Radio.Group>
+                    <NativeSelect
+                      mt="md"
+                      data={
+                        radioValue == "SOTW"
+                          ? [
+                              "attack",
+                              "defence",
+                              "strength",
+                              "hitpoints",
+                              "ranged",
+                              "prayer",
+                              "magic",
+                              "cooking",
+                              "woodcutting",
+                              "fletching",
+                              "fishing",
+                              "firemaking",
+                              "crafting",
+                              "smithing",
+                              "mining",
+                              "herblore",
+                              "agility",
+                              "thieving",
+                              "slayer",
+                              "farming",
+                              "runecrafting",
+                              "hunter",
+                              "construction",
+                            ]
+                          : [
+                              "abyssal_sire",
+                              "alchemical_hydra",
+                              "barrows_chests",
+                              "bryophyta",
+                              "callisto",
+                              "cerberus",
+                              "chambers_of_xeric",
+                              "chambers_of_xeric_challenge_mode",
+                              "chaos_elemental",
+                              "chaos_fanatic",
+                              "commander_zilyana",
+                              "corporeal_beast",
+                              "crazy_archaeologist",
+                              "dagannoth_prime",
+                              "dagannoth_rex",
+                              "dagannoth_supreme",
+                              "deranged_archaeologist",
+                              "general_graardor",
+                              "giant_mole",
+                              "grotesque_guardians",
+                              "hespori",
+                              "kalphite_queen",
+                              "king_black_dragon",
+                              "kraken",
+                              "kreearra",
+                              "kril_tsutsaroth",
+                              "mimic",
+                              "nex",
+                              "nightmare",
+                              "phosanis_nightmare",
+                              "obor",
+                              "phantom_muspah",
+                              "sarachnis",
+                              "scorpia",
+                              "skotizo",
+                              "tempoross",
+                              "the_gauntlet",
+                              "the_corrupted_gauntlet",
+                              "theatre_of_blood",
+                              "theatre_of_blood_hard_mode",
+                              "thermonuclear_smoke_devil",
+                              "tombs_of_amascut",
+                              "tombs_of_amascut_expert",
+                              "tzkal_zuk",
+                              "tztok_jad",
+                              "venenatis",
+                              "vetion",
+                              "vorkath",
+                              "wintertodt",
+                              "zalcano",
+                              "zulrah",
+                            ]
+                      }
+                      {...form.getInputProps("metric")}
+                    />
+                    <Button type="submit" mt="md">
+                      Submit
+                    </Button>
+                  </form>
+                </Modal>
+                <Modal
+                  opened={openConfirmation}
+                  onClose={closeAllModals}
+                  title="Delete Event"
+                >
+                  <Alert title="Confirm Deletion" color="red">
+                    Are you sure you want to delete {`"${titleValue}"`}? This
+                    action can not be undone.
+                  </Alert>
+                  <Group sx={{ display: "flex", justifyContent: "right" }}>
+                    <Button
+                      color="red"
+                      variant="outline"
+                      mt="sm"
+                      onClick={() => {
+                        void deleteSelectedCompetition
+                          .mutateAsync({
+                            id: eventIdValue,
+                            groupVerificationCode:
+                              form.values.groupVerificationCode,
+                          })
+                          .then(() => {
+                            router.reload();
+                          });
+                      }}
+                    >
+                      Confirm Deletion
+                    </Button>
+                  </Group>
+                </Modal>
+              </div>
+            )
+          ) : (
+            <Alert title="Unauthorized" color="red">
+              You must be an admin to access this page.
+            </Alert>
           )}
         </AppShell>
       </main>

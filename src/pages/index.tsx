@@ -6,31 +6,29 @@ import {
   Button,
   LoadingOverlay,
   AppShell,
-  SimpleGrid,
   Title,
   Stack,
   Center,
   Card,
   Image,
-  Skeleton,
 } from "@mantine/core";
 import Head from "next/head";
 import { TopFiveChart } from "components/data/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
-import { useMediaQuery } from "@mantine/hooks";
 import StackOrSimpleGrid from "components/layouts/SimpleGridOrStack";
 import { DataTable } from "mantine-datatable";
 import { orderBy } from "lodash";
 
 const Home: NextPage = (props) => {
   const { data: session } = useSession();
-  const isMobile = useMediaQuery("(max-width: 768px)");
   const username = (session?.user?.name as string) || "Guest";
-  const { data: groupCompetition, status: groupCompetitionFetchStatus } =
-    api.wom.findGroupCompetitions.useQuery({ id: 267 });
+  const {
+    data: groupCompetition,
+    // , status: groupCompetitionFetchStatus
+  } = api.wom.findGroupCompetitions.useQuery({ id: 267 });
   const {
     data: playerCompetitionDetails,
-    status: playerCompetitionDetailsFetchStatus,
+    // status: playerCompetitionDetailsFetchStatus,
   } = api.wom.findPlayerCompetitionDetails.useQuery({ name: username });
   console.log(playerCompetitionDetails);
 
@@ -198,6 +196,7 @@ const Home: NextPage = (props) => {
             // if not signed in display sign in page
             <div>
               <StackOrSimpleGrid cols={3} className="w-full">
+                <div></div>
                 <Center>
                   <Card
                     shadow="sm"
