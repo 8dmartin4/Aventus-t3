@@ -84,6 +84,7 @@ export const Sidebar = () => {
 
   const linkData = [
     { icon: IconHome, label: "/", tooltip: "Home" },
+    { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
     ...(session && session.user?.role
       ? session.user.role.includes("ADMIN")
         ? [
@@ -116,7 +117,6 @@ export const Sidebar = () => {
             },
           ]
       : []),
-    { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
   ];
 
   const links = linkData.map((link) => (
