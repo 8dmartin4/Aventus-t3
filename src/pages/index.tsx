@@ -183,8 +183,7 @@ const Home: NextPage = (props) => {
           ) : (
             // if not signed in display sign in page
             <div>
-              <SimpleGrid cols={isMobile ? 1 : 3} className="w-full">
-                <div></div>
+              <StackOrSimpleGrid cols={3} className="w-full">
                 <Center>
                   <Card
                     shadow="sm"
@@ -217,7 +216,7 @@ const Home: NextPage = (props) => {
                     </Stack>
                   </Card>
                 </Center>
-              </SimpleGrid>
+              </StackOrSimpleGrid>
             </div>
           )}
         </AppShell>
