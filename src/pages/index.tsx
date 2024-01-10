@@ -35,19 +35,29 @@ const Home: NextPage = (props) => {
   console.log(playerCompetitionDetails);
 
   const today = new Date();
-  // find the most recent friday
+
   const lastFriday =
-    new Date().getDay() >= 1
-      ? new Date(
-          new Date().setDate(
-            new Date().getDate() - ((new Date().getDay() + 2) % 7) - 7
-          )
-        )
-      : new Date(
-          new Date().setDate(
-            new Date().getDate() - ((new Date().getDay() + 2) % 7)
-          )
-        );
+    // find the most recent friday with a ternary
+    new Date(
+      today.getTime() -
+        (today.getDay() === 5
+          ? 0
+          : today.getDay() === 6
+          ? 1
+          : today.getDay() === 0
+          ? 2
+          : today.getDay() === 1
+          ? 3
+          : today.getDay() === 2
+          ? 4
+          : today.getDay() === 3
+          ? 5
+          : 6) *
+          24 *
+          60 *
+          60 *
+          1000
+    );
 
   // find the current and previous event
   const currentEvent = groupCompetition?.find(
@@ -161,10 +171,16 @@ const Home: NextPage = (props) => {
                       <DataTable
                         columns={[
                           {
+                            title: "RSN",
                             accessor: "player.username",
                           },
                           {
+                            title: "Gained",
                             accessor: "progress.gained",
+                          },
+                          {
+                            title: "Overall",
+                            accessor: "progress.new",
                           },
                         ]}
                         records={orderBy(
