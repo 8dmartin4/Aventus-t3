@@ -18,6 +18,7 @@ import useVersusLeader from "utils/useVersusLeader";
 import StackOrSimpleGrid from "components/layouts/SimpleGridOrStack";
 import { DataTable } from "mantine-datatable";
 import { orderBy } from "lodash";
+import { isSkill } from "@wise-old-man/utils";
 
 const Home: NextPage = (props) => {
   const { data: session } = useSession();
@@ -101,7 +102,7 @@ const Home: NextPage = (props) => {
     } else if (metric === "ehb") {
       return "EHB";
     } else {
-      return metric === typeof "SKILL" ? "XP" : "KC";
+      return metric === typeof "SKILL" || isSkill(metric) ? "XP" : "KC";
     }
   };
 

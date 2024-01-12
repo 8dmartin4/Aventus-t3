@@ -1,11 +1,12 @@
-import { Metric } from '@wise-old-man/utils';
+import { Metric, isSkill } from '@wise-old-man/utils';
 import { useCallback } from 'react';
 
 const useVersusLeader = (playerProgress: number, currentComp: { participations: { progress: { gained: number | null } }[] }, metric: string) => {
   const compGained = currentComp?.participations.map(
     (player) => player.progress.gained
   );
-  const trackingMetric = metric === typeof "SKILL" ? "XP" : "KC";
+
+  const trackingMetric = (metric === typeof "SKILL" || isSkill(metric)) ? "XP" : "KC";
 
   const versusLeader = useCallback(() => {
     if (!playerProgress && !compGained[0]) {
