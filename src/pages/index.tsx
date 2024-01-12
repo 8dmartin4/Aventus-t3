@@ -6,48 +6,57 @@ import {
   Button,
   LoadingOverlay,
   AppShell,
-  SimpleGrid,
   Title,
   Stack,
   Center,
   Card,
   Image,
-  Skeleton,
 } from "@mantine/core";
 import Head from "next/head";
 import { TopFiveChart } from "components/data/TopFiveChart";
 import useVersusLeader from "utils/useVersusLeader";
-import { useMediaQuery } from "@mantine/hooks";
 import StackOrSimpleGrid from "components/layouts/SimpleGridOrStack";
 import { DataTable } from "mantine-datatable";
 import { orderBy } from "lodash";
+import { isSkill } from "@wise-old-man/utils";
 
 const Home: NextPage = (props) => {
   const { data: session } = useSession();
-  const isMobile = useMediaQuery("(max-width: 768px)");
   const username = (session?.user?.name as string) || "Guest";
-  const { data: groupCompetition, status: groupCompetitionFetchStatus } =
-    api.wom.findGroupCompetitions.useQuery({ id: 267 });
+  const {
+    data: groupCompetition,
+    // , status: groupCompetitionFetchStatus
+  } = api.wom.findGroupCompetitions.useQuery({ id: 267 });
   const {
     data: playerCompetitionDetails,
-    status: playerCompetitionDetailsFetchStatus,
+    // status: playerCompetitionDetailsFetchStatus,
   } = api.wom.findPlayerCompetitionDetails.useQuery({ name: username });
   console.log(playerCompetitionDetails);
 
   const today = new Date();
-  // find the most recent friday
+
   const lastFriday =
-    new Date().getDay() >= 1
-      ? new Date(
-          new Date().setDate(
-            new Date().getDate() - ((new Date().getDay() + 2) % 7) - 7
-          )
-        )
-      : new Date(
-          new Date().setDate(
-            new Date().getDate() - ((new Date().getDay() + 2) % 7)
-          )
-        );
+    // find the most recent friday with a ternary
+    new Date(
+      today.getTime() -
+        (today.getDay() === 5
+          ? 0
+          : today.getDay() === 6
+          ? 1
+          : today.getDay() === 0
+          ? 2
+          : today.getDay() === 1
+          ? 3
+          : today.getDay() === 2
+          ? 4
+          : today.getDay() === 3
+          ? 5
+          : 6) *
+          24 *
+          60 *
+          60 *
+          1000
+    );
 
   // find the current and previous event
   const currentEvent = groupCompetition?.find(
@@ -93,7 +102,7 @@ const Home: NextPage = (props) => {
     } else if (metric === "ehb") {
       return "EHB";
     } else {
-      return metric === typeof "SKILL" ? "XP" : "KC";
+      return metric === typeof "SKILL" || isSkill(metric) ? "XP" : "KC";
     }
   };
 
@@ -161,12 +170,16 @@ const Home: NextPage = (props) => {
                       <DataTable
                         columns={[
                           {
+                            title: "RSN",
                             accessor: "player.username",
-                            sortable: true,
                           },
                           {
+                            title: "Gained",
                             accessor: "progress.gained",
-                            sortable: true,
+                          },
+                          {
+                            title: "Overall",
+                            accessor: "progress.new",
                           },
                         ]}
                         records={orderBy(
@@ -183,7 +196,7 @@ const Home: NextPage = (props) => {
           ) : (
             // if not signed in display sign in page
             <div>
-              <SimpleGrid cols={isMobile ? 1 : 3} className="w-full">
+              <StackOrSimpleGrid cols={3} className="w-full">
                 <div></div>
                 <Center>
                   <Card
@@ -217,7 +230,7 @@ const Home: NextPage = (props) => {
                     </Stack>
                   </Card>
                 </Center>
-              </SimpleGrid>
+              </StackOrSimpleGrid>
             </div>
           )}
         </AppShell>

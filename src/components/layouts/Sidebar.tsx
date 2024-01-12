@@ -84,25 +84,39 @@ export const Sidebar = () => {
 
   const linkData = [
     { icon: IconHome, label: "/", tooltip: "Home" },
-    {
-      icon: IconCalendarEvent,
-      label: "/events",
-      tooltip:
-        session && session.user?.role && session.user.role.includes("ADMIN")
-          ? "Edit Events"
-          : "Events",
-    },
     { icon: IconNews, label: "/newsfeed", tooltip: "Newsfeed" },
-    {
-      icon: IconForms,
-      label: "/staffapplication",
-      tooltip: "Staff Application Form",
-    },
-    {
-      icon: IconLock,
-      label: "/admin",
-      tooltip: "Admin Panel",
-    },
+    ...(session && session.user?.role
+      ? session.user.role.includes("ADMIN")
+        ? [
+            {
+              icon: IconCalendarEvent,
+              label: "/events",
+              tooltip:
+                session &&
+                session.user?.role &&
+                session.user.role.includes("ADMIN")
+                  ? "Edit Events"
+                  : "Events",
+            },
+            {
+              icon: IconForms,
+              label: "/staffapplication",
+              tooltip: "Staff Application Form",
+            },
+            {
+              icon: IconLock,
+              label: "/admin",
+              tooltip: "Admin Panel",
+            },
+          ]
+        : [
+            {
+              icon: IconForms,
+              label: "/staffapplication",
+              tooltip: "Staff Application Form",
+            },
+          ]
+      : []),
   ];
 
   const links = linkData.map((link) => (
